@@ -1,0 +1,31 @@
+,IV,Đánh giá,Quyết định
+n_loan_apps,0.2827285468928057,Trung bình,Giữ
+n_bank_apps,0.0787511986070215,Yếu,Giữ
+n_apps,0.06916534233851826,Yếu,Giữ
+education,0.050682394932544984,Yếu,Giữ
+call_pct_in_day,0.050528280473117686,Yếu,Giữ
+call_pct_other,0.04004307161427479,Yếu,Giữ
+call_total,0.039839243976394566,Yếu,Giữ
+fb_age_gap,0.03906346942775934,Yếu,Giữ
+employment_duration,0.03783818706593295,Yếu,Giữ
+employment_type,0.0287993824331669,Yếu,Giữ
+call_dur_total_log,0.025679931462937094,Yếu,Loại: hệ số ngược dấu
+fb_days_since_update,0.022022597122464637,Yếu,Giữ
+call_pct_out_night,0.021829013794743425,Yếu,Loại: hệ số ngược dấu
+num_friends,0.016789998903131764,Không có ích,"Loại: IV < 0,02"
+call_pct_out_day,0.016036830150613385,Không có ích,"Loại: IV < 0,02"
+call_pct_in_night,0.015703021583755104,Không có ích,"Loại: IV < 0,02"
+gender,0.015657433403846774,Không có ích,"Loại: IV < 0,02"
+n_game_apps,0.010221176298828159,Không có ích,"Loại: IV < 0,02"
+fb_gender_mismatch,0.009857255755498971,Không có ích,"Loại: IV < 0,02"
+apply_hour,0.007506007894972579,Không có ích,"Loại: IV < 0,02"
+marital_status,0.00745218147470126,Không có ích,"Loại: IV < 0,02"
+contacts_zero,0.007376846466413182,Không có ích,"Loại: IV < 0,02"
+age,0.006444760395040507,Không có ích,"Loại: IV < 0,02"
+device_brand,0.004833411042226395,Không có ích,"Loại: IV < 0,02"
+total_contacts,0.004711920979844617,Không có ích,"Loại: IV < 0,02"
+fb_relation_group,0.0029772926504783373,Không có ích,"Loại: IV < 0,02"
+children,0.0026595709566798035,Không có ích,"Loại: IV < 0,02"
+log_salary,0.0017128712098611507,Không có ích,"Loại: IV < 0,02"
+apply_weekday,3.7166826103003796e-05,Không có ích,"Loại: IV < 0,02"
+has_fb,1.2713412011907722e-05,Không có ích,"Loại: IV < 0,02"

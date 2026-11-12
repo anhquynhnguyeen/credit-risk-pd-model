@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kiểm định mô hình PD</title><style>
+:root{--ink:#1d2433;--muted:#5b6475;--line:#e3e7ee;--bg:#eef1f6;--card:#f6f8fb;--blue:#1F4E79;--orange:#E07B00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif}
+.deck{display:flex;flex-direction:column;align-items:center;gap:24px;padding:24px 16px}
+.slide{background:#fff;width:min(1100px,100%);aspect-ratio:16/9;padding:40px 52px;border-radius:10px;
+  box-shadow:0 4px 20px rgba(20,30,60,.08);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.slide h2{margin:0 0 18px;color:var(--blue);font-size:28px;border-bottom:3px solid var(--orange);padding-bottom:8px;align-self:flex-start}
+.slide .num{position:absolute;right:24px;bottom:14px;color:var(--muted);font-size:13px}
+.cover{margin:auto 0}.cover h1{font-size:44px;color:var(--blue);margin:8px 0 12px;line-height:1.15}
+.kicker{color:var(--orange);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin:0}
+.lead{font-size:20px;margin:0 0 24px}.muted{color:var(--muted)}
+.tiles{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.tile{flex:1;min-width:130px;background:var(--card);border-left:4px solid var(--blue);padding:12px 16px;border-radius:6px}
+.tile b{display:block;font-size:28px;color:var(--blue)}.tile span{color:var(--muted);font-size:14px}
+.tile.warn{border-color:var(--orange)}.tile.warn b{color:var(--orange)}
+.tile.bad{border-color:#C62828}.tile.bad b{color:#C62828}
+.tiles.small .tile b{font-size:24px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;min-height:0}
+.two.wide-left{grid-template-columns:1fr 1.15fr}.two.narrow-left{grid-template-columns:.8fr 1.4fr}
+.card{background:var(--card);border-radius:8px;padding:14px 18px}.card h3{margin:0 0 6px;color:var(--blue);font-size:18px}
+.card.accent{border-left:4px solid var(--orange);margin-top:16px}
+.card p{margin:6px 0}.tag{color:var(--orange);font-weight:600}
+.note{color:var(--muted);font-size:14.5px}
+.flow{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;counter-reset:s}
+.flow li{background:var(--card);border-radius:8px;padding:14px 16px;counter-increment:s;position:relative}
+.flow li::before{content:counter(s);position:absolute;top:10px;right:14px;font-size:30px;font-weight:700;color:#d5dbe5}
+.flow b{display:block;color:var(--blue);font-size:17px}.flow span{font-size:14.5px;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{background:var(--blue);color:#fff;font-weight:600;padding:6px 8px;text-align:left}
+td{padding:5px 8px;border-bottom:1px solid var(--line)}tr.total td{font-weight:700;border-top:2px solid var(--blue)}
+table.compact{font-size:13px}table.compact td,table.compact th{padding:4px 7px}
+.verdict td.ok{color:#2E7D32;font-weight:600}.verdict td.ko{color:#C62828;font-weight:600}.verdict td.mid{color:#B7791F;font-weight:600}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+code{background:#eef2f7;padding:1px 5px;border-radius:4px;font-size:.92em}
+.formula{font-size:18px;background:var(--card);padding:10px 14px;border-radius:6px}
+.bullets{margin:0;padding-left:20px}.bullets li{margin-bottom:12px}
+.chart{width:100%;height:auto}.chart .grid{stroke:#e8ecf2}.chart .tick{font-size:12px;fill:#5b6475}
+.chart .axis{font-size:12.5px;fill:#3a4252}.chart .frame{fill:none;stroke:#cfd6e0}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.legend{display:flex;gap:18px;font-size:13px;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.nav{position:fixed;bottom:16px;right:16px;display:flex;gap:8px}
+.nav button{border:0;background:var(--blue);color:#fff;border-radius:6px;padding:8px 14px;font-size:15px;cursor:pointer}
+body.present .deck{height:100vh;justify-content:center;padding:0}
+body.present .slide{display:none;width:min(100vw,177.7vh);box-shadow:none;border-radius:0}
+body.present .slide.on{display:flex}
+@media (max-width:760px){.slide{aspect-ratio:auto;padding:24px 18px}.two,.two.wide-left,.two.narrow-left,.flow,.charts{grid-template-columns:1fr}}
+@media print{body{background:#fff}.nav{display:none}.deck{padding:0;gap:0}
+  .slide{box-shadow:none;border-radius:0;page-break-after:always;width:100%;display:flex!important}}
+@page{size:landscape;margin:0}
+</style></head>
+<body><main class="deck"><section class="slide">
+<div class="cover">
+  <p class="kicker">Bài test ứng viên · Bài I</p>
+  <h1>Kiểm định mô hình xác suất vỡ nợ (PD)</h1>
+  <p class="lead">Accuracy Ratio / AUROC · Binomial test (1 phía, 2 phía) · Hosmer-Lemeshow test</p>
+  <p class="muted">Dữ liệu: 3.698 khách hàng có điểm tín dụng và nhãn good/bad thực tế</p>
+</div><span class="num">1 / 11</span></section><section class="slide"><h2>Dữ liệu và câu hỏi kiểm định</h2>
+<div class="tiles">
+  <div class="tile"><b>3.698</b><span>khách hàng</span></div>
+  <div class="tile"><b>439</b><span>khách bad</span></div>
+  <div class="tile"><b>11,87%</b><span>tỷ lệ vỡ nợ thực tế (ODR)</span></div>
+  <div class="tile warn"><b>8,22%</b><span>PD dự báo bình quân</span></div>
+</div>
+<div class="two">
+  <div class="card"><h3>1 · Khả năng phân biệt <em>(discrimination)</em></h3>
+    <p>Mô hình có xếp khách bad vào nhóm rủi ro cao hơn khách good không?</p>
+    <p class="tag">→ Accuracy Ratio / AUROC</p></div>
+  <div class="card"><h3>2 · Hiệu chuẩn <em>(calibration)</em></h3>
+    <p>Mức PD dự báo có khớp với tỷ lệ vỡ nợ thực tế không?</p>
+    <p class="tag">→ Binomial test (từng hạng), Hosmer-Lemeshow (toàn danh mục)</p></div>
+</div>
+<p class="note">Một mô hình có thể xếp hạng tốt mà PD vẫn sai, nên cần cả hai nhóm kiểm định.</p><span class="num">2 / 11</span></section><section class="slide"><h2>Quy trình xử lý</h2>
+<ol class="flow">
+  <li><b>Gán hạng</b><span>Điểm → hạng theo Master Scale (10 hạng, điểm càng cao càng an toàn)</span></li>
+  <li><b>Gán PD</b><span>Mỗi hạng có một PD dự báo, từ 27,5% (hạng 1) đến 0,1% (hạng 10)</span></li>
+  <li><b>Tổng hợp theo hạng</b><span>n, số bad d, ODR = d/n, số bad kỳ vọng E = n × PD</span></li>
+  <li><b>AUC / AR</b><span>Đường ROC và CAP từ phân phối lũy kế bad / good</span></li>
+  <li><b>Binomial</b><span>So sánh d với phân phối Binomial(n, PD) ở từng hạng</span></li>
+  <li><b>Hosmer-Lemeshow</b><span>Gộp sai lệch của 10 hạng thành một thống kê χ²</span></li>
+</ol>
+<p class="note">Mọi bước được làm lại bằng công thức trong file Excel đính kèm và đối chiếu với code Python.</p><span class="num">3 / 11</span></section><section class="slide"><h2>Bảng tổng hợp theo hạng</h2>
+<div class="two wide-left">
+  <table><thead><tr><th>Hạng</th><th>Điểm</th><th>n</th><th>Bad</th><th>ODR</th><th>PD</th><th>Kỳ vọng</th></tr></thead>
+  <tbody><tr><td>1</td><td>≤450</td><td>303</td><td>70</td><td>23,1%</td><td>27,5%</td><td>83,3</td></tr><tr><td>2</td><td>≤500</td><td>289</td><td>62</td><td>21,5%</td><td>19,6%</td><td>56,6</td></tr><tr><td>3</td><td>≤550</td><td>460</td><td>84</td><td>18,3%</td><td>12,4%</td><td>57,0</td></tr><tr><td>4</td><td>≤600</td><td>428</td><td>69</td><td>16,1%</td><td>9,1%</td><td>38,9</td></tr><tr><td>5</td><td>≤650</td><td>473</td><td>64</td><td>13,5%</td><td>6,7%</td><td>31,7</td></tr><tr><td>6</td><td>≤700</td><td>413</td><td>42</td><td>10,2%</td><td>4,0%</td><td>16,5</td></tr><tr><td>7</td><td>≤750</td><td>430</td><td>26</td><td>6,0%</td><td>2,8%</td><td>12,0</td></tr><tr><td>8</td><td>≤800</td><td>387</td><td>12</td><td>3,1%</td><td>1,5%</td><td>5,8</td></tr><tr><td>9</td><td>≤850</td><td>308</td><td>7</td><td>2,3%</td><td>0,6%</td><td>1,8</td></tr><tr><td>10</td><td>&gt;850</td><td>207</td><td>3</td><td>1,4%</td><td>0,1%</td><td>0,2</td></tr><tr class="total"><td colspan="2">Tổng</td><td>3698</td><td>439</td><td>11,9%</td><td>8,2%</td><td>304,1</td></tr></tbody></table>
+  <div><svg viewBox="0 0 640 320" class="chart" role="img" aria-label="ODR thực tế so với PD dự báo theo hạng"><line x1="52" x2="624" y1="280.0" y2="280.0" class="grid"/><text x="44" y="284.0" class="tick" text-anchor="end">0%</text><line x1="52" x2="624" y1="236.7" y2="236.7" class="grid"/><text x="44" y="240.7" class="tick" text-anchor="end">5%</text><line x1="52" x2="624" y1="193.3" y2="193.3" class="grid"/><text x="44" y="197.3" class="tick" text-anchor="end">10%</text><line x1="52" x2="624" y1="150.0" y2="150.0" class="grid"/><text x="44" y="154.0" class="tick" text-anchor="end">15%</text><line x1="52" x2="624" y1="106.7" y2="106.7" class="grid"/><text x="44" y="110.7" class="tick" text-anchor="end">20%</text><line x1="52" x2="624" y1="63.3" y2="63.3" class="grid"/><text x="44" y="67.3" class="tick" text-anchor="end">25%</text><line x1="52" x2="624" y1="20.0" y2="20.0" class="grid"/><text x="44" y="24.0" class="tick" text-anchor="end">30%</text><rect x="64.9" y="79.8" width="31.5" height="200.2" fill="#1F4E79" rx="2"><title>Hạng 1: ODR 23,1%</title></rect><text x="80.6" y="298" class="tick" text-anchor="middle">1</text><rect x="122.1" y="94.1" width="31.5" height="185.9" fill="#1F4E79" rx="2"><title>Hạng 2: ODR 21,5%</title></rect><text x="137.8" y="298" class="tick" text-anchor="middle">2</text><rect x="179.3" y="121.7" width="31.5" height="158.3" fill="#1F4E79" rx="2"><title>Hạng 3: ODR 18,3%</title></rect><text x="195.0" y="298" class="tick" text-anchor="middle">3</text><rect x="236.5" y="140.3" width="31.5" height="139.7" fill="#1F4E79" rx="2"><title>Hạng 4: ODR 16,1%</title></rect><text x="252.2" y="298" class="tick" text-anchor="middle">4</text><rect x="293.7" y="162.7" width="31.5" height="117.3" fill="#1F4E79" rx="2"><title>Hạng 5: ODR 13,5%</title></rect><text x="309.4" y="298" class="tick" text-anchor="middle">5</text><rect x="350.9" y="191.9" width="31.5" height="88.1" fill="#1F4E79" rx="2"><title>Hạng 6: ODR 10,2%</title></rect><text x="366.6" y="298" class="tick" text-anchor="middle">6</text><rect x="408.1" y="227.6" width="31.5" height="52.4" fill="#1F4E79" rx="2"><title>Hạng 7: ODR 6,0%</title></rect><text x="423.8" y="298" class="tick" text-anchor="middle">7</text><rect x="465.3" y="253.1" width="31.5" height="26.9" fill="#1F4E79" rx="2"><title>Hạng 8: ODR 3,1%</title></rect><text x="481.0" y="298" class="tick" text-anchor="middle">8</text><rect x="522.5" y="260.3" width="31.5" height="19.7" fill="#1F4E79" rx="2"><title>Hạng 9: ODR 2,3%</title></rect><text x="538.2" y="298" class="tick" text-anchor="middle">9</text><rect x="579.7" y="267.4" width="31.5" height="12.6" fill="#1F4E79" rx="2"><title>Hạng 10: ODR 1,4%</title></rect><text x="595.4" y="298" class="tick" text-anchor="middle">10</text><polyline fill="none" stroke="#E07B00" stroke-width="2.5" points="80.6,41.7 137.8,110.1 195.0,172.5 252.2,201.1 309.4,221.9 366.6,245.3 423.8,255.7 481.0,267.0 538.2,274.8 595.4,279.1"/><circle cx="80.6" cy="41.7" r="4" fill="#E07B00"/><circle cx="137.8" cy="110.1" r="4" fill="#E07B00"/><circle cx="195.0" cy="172.5" r="4" fill="#E07B00"/><circle cx="252.2" cy="201.1" r="4" fill="#E07B00"/><circle cx="309.4" cy="221.9" r="4" fill="#E07B00"/><circle cx="366.6" cy="245.3" r="4" fill="#E07B00"/><circle cx="423.8" cy="255.7" r="4" fill="#E07B00"/><circle cx="481.0" cy="267.0" r="4" fill="#E07B00"/><circle cx="538.2" cy="274.8" r="4" fill="#E07B00"/><circle cx="595.4" cy="279.1" r="4" fill="#E07B00"/><text x="338.0" y="316" class="axis" text-anchor="middle">Hạng (1 = rủi ro nhất)</text></svg><div class="legend"><span><i style="background:#1F4E79"></i>ODR thực tế</span><span><i style="background:#E07B00"></i>PD dự báo</span></div>
+    <p class="note">ODR giảm đều từ hạng 1 đến 10, nên thứ tự xếp hạng đúng. Nhưng ODR nằm trên PD ở 9/10 hạng,
+    nghĩa là PD bị ước tính thấp.</p></div>
+</div><span class="num">4 / 11</span></section><section class="slide"><h2>Accuracy Ratio / AUROC</h2>
+<div class="two">
+  <div>
+    <p><b>AUC</b> = xác suất một khách bad ngẫu nhiên bị chấm rủi ro hơn một khách good ngẫu nhiên.
+    0,5 = đoán bừa, 1 = hoàn hảo.</p>
+    <p><b>AR (Gini)</b> = diện tích giữa CAP mô hình và đường ngẫu nhiên, chia cho diện tích tương ứng
+    của mô hình hoàn hảo. Quan hệ: <code>AR = 2 × AUC − 1</code>.</p>
+    <p><b>Cách tính:</b> xếp hạng từ rủi ro nhất → an toàn nhất, lũy kế % bad (TPR), % good (FPR), % khách,
+    diện tích bằng quy tắc hình thang <code>Σ Δx·(yᵢ + yᵢ₋₁)/2</code>.</p>
+    <div class="tiles small">
+      <div class="tile"><b>0,692</b><span>AUC<br>CI 95%: 0,664–0,721</span></div>
+      <div class="tile"><b>0,385</b><span>Accuracy Ratio</span></div>
+    </div>
+    <p class="note">Theo 10 hạng: AUC = 0,695, AR từ CAP = 0,390, khớp với 2·AUC − 1.
+    <b>Đánh giá:</b> khả năng phân biệt trung bình, sát ngưỡng 0,7 thường dùng cho mô hình bán lẻ.</p>
+  </div>
+  <div class="charts"><svg viewBox="0 0 260 270" class="chart sq" role="img" aria-label="Đường ROC"><rect x="36" y="36" width="188" height="188" class="frame"/><text x="36.0" y="240.0" class="tick" text-anchor="middle">0%</text><text x="30" y="228.0" class="tick" text-anchor="end">0%</text><text x="130.0" y="240.0" class="tick" text-anchor="middle">50%</text><text x="30" y="134.0" class="tick" text-anchor="end">50%</text><text x="224.0" y="240.0" class="tick" text-anchor="middle">100%</text><text x="30" y="40.0" class="tick" text-anchor="end">100%</text><line x1="36" y1="224" x2="224" y2="36" stroke="#8A94A6" stroke-dasharray="4 4"/><polyline fill="none" stroke="#1F4E79" stroke-width="2.5" points="36.0,224.0 49.4,194.0 62.5,167.5 84.2,131.5 104.9,101.9 128.5,74.5 149.9,56.6 173.2,45.4 194.9,40.3 212.2,37.3 224.0,36.0"/><circle cx="36.0" cy="224.0" r="3" fill="#1F4E79"/><circle cx="49.4" cy="194.0" r="3" fill="#1F4E79"/><circle cx="62.5" cy="167.5" r="3" fill="#1F4E79"/><circle cx="84.2" cy="131.5" r="3" fill="#1F4E79"/><circle cx="104.9" cy="101.9" r="3" fill="#1F4E79"/><circle cx="128.5" cy="74.5" r="3" fill="#1F4E79"/><circle cx="149.9" cy="56.6" r="3" fill="#1F4E79"/><circle cx="173.2" cy="45.4" r="3" fill="#1F4E79"/><circle cx="194.9" cy="40.3" r="3" fill="#1F4E79"/><circle cx="212.2" cy="37.3" r="3" fill="#1F4E79"/><circle cx="224.0" cy="36.0" r="3" fill="#1F4E79"/><text x="130.0" y="266" class="axis" text-anchor="middle">FPR: % good bị từ chối nhầm</text><text x="36" y="26" class="axis">Đường ROC · y = TPR: % bad bị bắt</text></svg><svg viewBox="0 0 260 270" class="chart sq" role="img" aria-label="Đường CAP"><rect x="36" y="36" width="188" height="188" class="frame"/><text x="36.0" y="240.0" class="tick" text-anchor="middle">0%</text><text x="30" y="228.0" class="tick" text-anchor="end">0%</text><text x="130.0" y="240.0" class="tick" text-anchor="middle">50%</text><text x="30" y="134.0" class="tick" text-anchor="end">50%</text><text x="224.0" y="240.0" class="tick" text-anchor="middle">100%</text><text x="30" y="40.0" class="tick" text-anchor="end">100%</text><line x1="36" y1="224" x2="224" y2="36" stroke="#8A94A6" stroke-dasharray="4 4"/><polyline fill="none" stroke="#2E7D32" stroke-width="1.5" points="36.0,224.0 58.3,36.0 224.0,36.0"/><polyline fill="none" stroke="#1F4E79" stroke-width="2.5" points="36.0,224.0 51.4,194.0 66.1,167.5 89.5,131.5 111.2,101.9 135.3,74.5 156.3,56.6 178.1,45.4 197.8,40.3 213.5,37.3 224.0,36.0"/><circle cx="36.0" cy="224.0" r="3" fill="#1F4E79"/><circle cx="51.4" cy="194.0" r="3" fill="#1F4E79"/><circle cx="66.1" cy="167.5" r="3" fill="#1F4E79"/><circle cx="89.5" cy="131.5" r="3" fill="#1F4E79"/><circle cx="111.2" cy="101.9" r="3" fill="#1F4E79"/><circle cx="135.3" cy="74.5" r="3" fill="#1F4E79"/><circle cx="156.3" cy="56.6" r="3" fill="#1F4E79"/><circle cx="178.1" cy="45.4" r="3" fill="#1F4E79"/><circle cx="197.8" cy="40.3" r="3" fill="#1F4E79"/><circle cx="213.5" cy="37.3" r="3" fill="#1F4E79"/><circle cx="224.0" cy="36.0" r="3" fill="#1F4E79"/><text x="130.0" y="266" class="axis" text-anchor="middle">% khách bị từ chối (rủi ro nhất trước)</text><text x="36" y="26" class="axis">Đường CAP · y = TPR: % bad bị bắt</text></svg></div>
+</div><span class="num">5 / 11</span></section><section class="slide"><h2>Vì sao dùng AUC / ROC?</h2>
+<div class="two">
+  <div>
+    <p><b>Đọc đường ROC:</b> lần lượt đặt ngưỡng "từ chối hạng 1 → k". Số người bị từ chối luôn là phần <b>cộng dồn</b> từ hạng 1:</p>
+    <table class="compact"><thead><tr><th>Ngưỡng</th><th>Từ chối nhầm good<br>(FPR = % good lũy kế)</th><th>Bắt được bad<br>(TPR = % bad lũy kế)</th></tr></thead><tbody>
+    <tr><td>đến hạng 1</td><td>7,1%</td><td>15,9%</td></tr>
+    <tr><td>đến hạng 2</td><td>14,1%</td><td>30,1%</td></tr>
+    <tr><td>đến hạng 4</td><td>36,7%</td><td>64,9%</td></tr>
+    </tbody></table>
+    <p class="note">Mỗi ngưỡng là một điểm (FPR, TPR); nối 10 điểm thành đường ROC. AUC = diện tích dưới đường
+    = xác suất một khách bad bị chấm rủi ro hơn một khách good (69% số cặp được xếp đúng).</p>
+  </div>
+  <div>
+    <p><b>Điểm lợi:</b></p>
+    <ul class="bullets">
+      <li><b>Đo đúng thứ ngân hàng dùng:</b> điểm số dùng để xếp hạng rồi duyệt / từ chối / định giá, nên thứ tự là điều quan trọng nhất.</li>
+      <li><b>Không phụ thuộc ngưỡng cắt:</b> tính trên mọi ngưỡng, trong khi ngưỡng là quyết định kinh doanh có thể thay đổi.</li>
+      <li><b>Không bị đánh lừa khi bad hiếm:</b> "mô hình" đoán ai cũng good đúng 88% nhưng AUC chỉ 0,5.</li>
+      <li><b>Dễ diễn giải:</b> AUC 0,69 = 69% số cặp (bad, good) được xếp đúng thứ tự.</li>
+    </ul>
+    <p class="note"><b>Giới hạn:</b> AUC chỉ đo thứ tự, không cho biết con số PD đúng hay sai, nên cần thêm Binomial và Hosmer-Lemeshow.</p>
+  </div>
+</div><span class="num">6 / 11</span></section><section class="slide"><h2>Binomial test theo từng hạng</h2>
+<div class="two narrow-left">
+  <div>
+    <p><b>1 phía:</b> H₀: PD thật ≤ PD dự báo. H₁: mô hình đánh giá <b>thấp</b> rủi ro (hướng thận trọng).</p>
+    <p><b>2 phía:</b> H₀: PD thật = PD dự báo. Bắt cả trường hợp quá cao lẫn quá thấp.</p>
+    <p><code>p = P(X ≥ d), X ~ Bin(n, PD)</code><br>
+    Excel: <code>1 − BINOM.DIST(d−1, n, PD, TRUE)</code><br>
+    Ngưỡng 95%: <code>BINOM.INV(n, PD, 0,95)</code></p>
+    <p class="note"><b>Kết quả (α = 5%):</b> 1 phía bác bỏ 8/10 hạng, 2 phía bác bỏ 8/10 hạng.
+    Hạng 1 là trường hợp ngược lại: PD hơi cao hơn thực tế (thận trọng).</p>
+  </div>
+  <table class="compact"><thead><tr><th>Hạng</th><th>n</th><th>d</th><th>PD</th><th>ODR</th><th>Ngưỡng d</th>
+  <th>p 1 phía</th><th>p 2 phía</th><th>Kết luận 2 phía</th><th>Đèn</th></tr></thead>
+  <tbody><tr><td>1</td><td>303</td><td>70</td><td>27,5%</td><td>23,1%</td><td>96</td><td>0,964</td><td>0,095</td><td>Không bác bỏ</td><td><span class="dot" style="background:#2E7D32"></span>Xanh</td></tr><tr><td>2</td><td>289</td><td>62</td><td>19,6%</td><td>21,5%</td><td>68</td><td>0,234</td><td>0,467</td><td>Không bác bỏ</td><td><span class="dot" style="background:#2E7D32"></span>Xanh</td></tr><tr><td>3</td><td>460</td><td>84</td><td>12,4%</td><td>18,3%</td><td>69</td><td>1,9×10<sup>-4</sup></td><td>3,8×10<sup>-4</sup></td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#C62828"></span>Đỏ</td></tr><tr><td>4</td><td>428</td><td>69</td><td>9,1%</td><td>16,1%</td><td>49</td><td>2,6×10<sup>-6</sup></td><td>5,3×10<sup>-6</sup></td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#C62828"></span>Đỏ</td></tr><tr><td>5</td><td>473</td><td>64</td><td>6,7%</td><td>13,5%</td><td>41</td><td>9,0×10<sup>-8</sup></td><td>1,8×10<sup>-7</sup></td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#C62828"></span>Đỏ</td></tr><tr><td>6</td><td>413</td><td>42</td><td>4,0%</td><td>10,2%</td><td>23</td><td>4,8×10<sup>-8</sup></td><td>9,7×10<sup>-8</sup></td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#C62828"></span>Đỏ</td></tr><tr><td>7</td><td>430</td><td>26</td><td>2,8%</td><td>6,0%</td><td>18</td><td>2,6×10<sup>-4</sup></td><td>5,1×10<sup>-4</sup></td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#C62828"></span>Đỏ</td></tr><tr><td>8</td><td>387</td><td>12</td><td>1,5%</td><td>3,1%</td><td>10</td><td>0,015</td><td>0,031</td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#B7791F"></span>Vàng</td></tr><tr><td>9</td><td>308</td><td>7</td><td>0,6%</td><td>2,3%</td><td>4</td><td>0,003</td><td>0,006</td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#C62828"></span>Đỏ</td></tr><tr><td>10</td><td>207</td><td>3</td><td>0,1%</td><td>1,4%</td><td>1</td><td>0,001</td><td>0,003</td><td>Bác bỏ (PD thấp)</td><td><span class="dot" style="background:#C62828"></span>Đỏ</td></tr></tbody></table>
+</div><span class="num">7 / 11</span></section><section class="slide"><h2>Hosmer-Lemeshow test</h2>
+<div class="two">
+  <div>
+    <p class="formula">HL = Σ<sub>i</sub> (d<sub>i</sub> − n<sub>i</sub>·PD<sub>i</sub>)² / (n<sub>i</sub>·PD<sub>i</sub>·(1 − PD<sub>i</sub>)) ~ χ²(df)</p>
+    <p>H₀: PD dự báo khớp với thực tế ở <b>tất cả</b> các hạng.
+    PD được cố định từ trước (kiểm định ngoài mẫu) nên <b>df = số hạng = 10</b>
+    (df = k − 2 chỉ dùng khi kiểm định trên mẫu phát triển).</p>
+    <p>Excel: <code>CHISQ.DIST.RT(HL, 10)</code></p>
+    <p>Đóng góp lớn nhất: hạng 6 (40,9), hạng 10 (37,7), hạng 5 (35,3).</p>
+  </div>
+  <div>
+    <div class="tiles small">
+      <div class="tile bad"><b>195,4</b><span>HL (10 hạng)<br>ngưỡng χ² 95% = 18,3</span></div>
+      <div class="tile bad"><b>1,5×10<sup>-36</sup></b><span>p-value</span></div>
+    </div>
+    <div class="card"><h3>Cách đọc</h3>
+    <p>Nếu PD dự báo đúng, HL thường dao động quanh 10 (bằng số hạng) và chỉ vượt
+    18,3 trong 5% trường hợp.</p>
+    <p class="tag">→ HL = 195,4, vượt xa ngưỡng: bác bỏ H₀, PD chưa được hiệu chuẩn tốt.</p></div>
+  </div>
+</div><span class="num">8 / 11</span></section><section class="slide"><h2>Giả định và hạn chế</h2>
+<ul class="bullets">
+  <li><b>Vỡ nợ độc lập:</b> Binomial và HL giả định các khách hàng vỡ nợ độc lập. Thực tế có tương quan
+  (cùng chịu chu kỳ kinh tế), làm phương sai số vỡ nợ lớn hơn, nên test dễ bác bỏ hơn mức cần.
+  Có thể điều chỉnh bằng mô hình một nhân tố Vasicek (hệ số tương quan ρ).</li>
+  <li><b>Một kỳ dữ liệu:</b> chưa biết dữ liệu thuộc giai đoạn nào của chu kỳ kinh tế (PIT hay TTC); cần
+  kiểm định thêm theo thời gian (out-of-time) và độ ổn định quần thể (PSI).</li>
+  <li><b>AUC theo hạng và theo điểm</b> chênh nhau rất ít, nên việc chia 10 hạng không làm mất thông tin xếp hạng.</li>
+</ul><span class="num">9 / 11</span></section><section class="slide"><h2>Kết luận và khuyến nghị</h2>
+<table class="verdict"><thead><tr><th>Tiêu chí</th><th>Kết quả</th><th>Đánh giá</th></tr></thead><tbody>
+<tr><td>Khả năng phân biệt</td><td>AUC 0,692 · AR 0,385</td><td class="mid">Trung bình, chấp nhận được</td></tr>
+<tr><td>Thứ tự xếp hạng</td><td>ODR giảm đều qua 10 hạng</td><td class="ok">Đạt</td></tr>
+<tr><td>Hiệu chuẩn từng hạng</td><td>Binomial 1 phía bác bỏ 8/10 hạng</td><td class="ko">Không đạt</td></tr>
+<tr><td>Hiệu chuẩn toàn danh mục</td><td>HL 195,4, p ≈ 0</td><td class="ko">Không đạt</td></tr>
+<tr><td>Mức PD trung bình</td><td>PD 8,22% so với ODR 11,87%</td><td class="ko">Thấp hơn ~31%</td></tr>
+</tbody></table>
+<div class="card accent">
+<p><b>Mô hình xếp hạng đúng nhưng PD bị đánh giá thấp có hệ thống.</b></p>
+<p>Khuyến nghị: <b>hiệu chuẩn lại</b> (recalibration) thay vì xây lại mô hình. Ví dụ: ước lượng lại quan hệ
+logit(PD) theo điểm hoặc dịch chuyển PD về xu hướng trung tâm mới, sau đó kiểm định lại out-of-time.
+Song song, xem xét bổ sung biến để cải thiện AUC.</p></div><span class="num">10 / 11</span></section><section class="slide"><h2>Phụ lục: công thức Excel</h2>
+<table class="compact"><thead><tr><th>Bước</th><th>Công thức</th></tr></thead><tbody>
+<tr><td>Gán hạng</td><td><code>=MATCH(Điểm, CậnDưới, 1)</code></td></tr>
+<tr><td>Gán PD</td><td><code>=INDEX(PD, Hạng)</code></td></tr>
+<tr><td>n, d theo hạng</td><td><code>=COUNTIF(Hạng, h)</code> · <code>=COUNTIFS(Hạng, h, Bad, 1)</code></td></tr>
+<tr><td>Diện tích ROC/CAP</td><td><code>=(x − x₋₁)·(y + y₋₁)/2</code>, AUC = tổng</td></tr>
+<tr><td>AR từ CAP</td><td><code>=(DiệnTíchCAP − 0,5)/(0,5 − DR/2)</code></td></tr>
+<tr><td>Binomial 1 phía</td><td><code>=1 − BINOM.DIST(d − 1, n, PD, TRUE)</code></td></tr>
+<tr><td>Ngưỡng 95%</td><td><code>=BINOM.INV(n, PD, 0,95)</code></td></tr>
+<tr><td>Binomial 2 phía</td><td><code>=MIN(1, 2·MIN(P(X≤d), P(X≥d)))</code></td></tr>
+<tr><td>Thành phần HL</td><td><code>=(d − n·PD)^2/(n·PD·(1 − PD))</code></td></tr>
+<tr><td>p-value HL</td><td><code>=CHISQ.DIST.RT(HL, 10)</code></td></tr>
+</tbody></table>
+<p class="note">Chi tiết trong file Bai1_PD_Validation.xlsx: mỗi sheet có cột "Python" màu xám để đối chiếu.</p><span class="num">11 / 11</span></section></main>
+<div class="nav"><button onclick="toggle()" title="Phím F">Trình chiếu</button>
+<button onclick="show(i-1)">←</button><button onclick="show(i+1)">→</button></div>
+<script>
+const S=[...document.querySelectorAll('.slide')];let i=0;
+function show(k){i=Math.max(0,Math.min(S.length-1,k));S.forEach((s,j)=>s.classList.toggle('on',j===i));}
+function toggle(){document.body.classList.toggle('present');show(i);}
+document.addEventListener('keydown',e=>{
+  if(e.key==='f'||e.key==='F')toggle();
+  if(!document.body.classList.contains('present'))return;
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1);}
+  if(['ArrowLeft','PageUp'].includes(e.key))show(i-1);
+  if(e.key==='Escape')toggle();});
+show(0);
+</script></body></html>

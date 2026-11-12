@@ -1,0 +1,814 @@
+<title>Sổ tay ôn bài test PD</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,500&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: một cột đọc ~68ch như giáo trình, hình minh họa rộng hơn chữ; mỗi khái niệm = nguyên lý → hình tương tác → "áp vào bài". */
+:root{
+  --bg:#F5F7FA; --surface:#FFFFFF; --ink:#18212F; --muted:#5A6577; --line:#DCE1E9;
+  --accent:#3346A8; --good:#23808E; --bad:#C23B4A; --warn:#B7791F; --tint:#EEF1FA;
+  --f-display:"Lora",Georgia,"Times New Roman",serif;
+  --f-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161F; --surface:#18202C; --ink:#E6EAF1; --muted:#9AA5B6; --line:#2A3443;
+  --accent:#8FA2FF; --good:#4FB7C4; --bad:#F07380; --warn:#E3AE57; --tint:#1F2940; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161F; --surface:#18202C; --ink:#E6EAF1; --muted:#9AA5B6; --line:#2A3443;
+  --accent:#8FA2FF; --good:#4FB7C4; --bad:#F07380; --warn:#E3AE57; --tint:#1F2940; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:980px;margin:0 auto}
+.prose{max-width:68ch}
+header.hero{padding-block:48px 28px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.eyebrow{font:600 12px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 clamp(30px,5vw,44px)/1.15 var(--f-display);margin:12px 0 14px;text-wrap:balance}
+h2{font:700 clamp(24px,3.4vw,30px)/1.2 var(--f-display);margin:0 0 8px;text-wrap:balance}
+h3{font:600 18px/1.35 var(--f-body);margin:28px 0 6px;color:var(--ink)}
+p{margin:0 0 12px}
+.lead{font-size:18px;color:var(--muted);max-width:62ch}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px;font-size:14px}
+nav.toc a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent)}
+section{padding-block:40px 8px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.secnum{font:500 italic 15px/1 var(--f-display);color:var(--muted);margin-bottom:6px;display:block}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 14px;margin:18px 0 20px}
+.fig figcaption{font-size:13.5px;color:var(--muted);margin-top:8px}
+.figtitle{font-weight:600;font-size:15px;margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid2>*{min-width:0}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--f-body);font-size:11px;fill:var(--muted)}
+svg .lbl{fill:var(--ink);font-weight:600}
+svg .axis{stroke:var(--line);stroke-width:1}
+svg .grid{stroke:var(--line);stroke-width:1;opacity:.6}
+.f-good{fill:var(--good)} .f-bad{fill:var(--bad)} .f-acc{fill:var(--accent)} .f-muted{fill:var(--muted)} .f-warn{fill:var(--warn)}
+.s-good{stroke:var(--good)} .s-bad{stroke:var(--bad)} .s-acc{stroke:var(--accent)} .s-muted{stroke:var(--muted)} .s-ink{stroke:var(--ink)} .s-warn{stroke:var(--warn)}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:4px 0 12px;font-size:14px}
+input[type=range]{flex:1;min-width:160px;accent-color:var(--accent)}
+select,button{font:inherit;font-size:14px;color:var(--ink);background:var(--tint);border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.readout{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;margin-top:6px}
+.readout b{font:600 15px var(--f-mono);font-variant-numeric:tabular-nums}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.key{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-right:14px}
+.key i{width:11px;height:11px;border-radius:2px;display:inline-block}
+.apply{background:var(--tint);border-radius:8px;padding:14px 18px;margin:16px 0}
+.apply strong:first-child{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.formula{font:15px/1.6 var(--f-mono);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:10px 0 14px;overflow-x:auto;white-space:nowrap}
+.en{color:var(--muted);font-style:italic}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.pair>div{border:1px solid var(--line);border-radius:8px;padding:12px 16px;background:var(--surface);min-width:0}
+.pair h4{margin:0 0 4px;font-size:15px}
+@media (max-width:620px){.pair{grid-template-columns:1fr}}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:12.5px;letter-spacing:.04em;text-transform:uppercase}
+.tally{display:flex;gap:4px;flex-wrap:wrap;min-height:22px;margin-top:8px}
+.tally span{width:9px;height:9px;border-radius:50%}
+
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 18px}
+.steps3>div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0}
+.steps3 b{display:block;font-size:24px;color:var(--muted)}.steps3 span{font-size:14px;color:var(--muted)}
+.steps3 .hi{border-color:var(--accent);background:var(--tint)}.steps3 .hi b{color:var(--accent)}
+@media (max-width:620px){.steps3{grid-template-columns:1fr}}
+.promise{max-width:68ch;margin:14px 0 46px;position:relative}
+.promise .bar{height:16px;border-radius:8px;background:var(--line);display:flex;overflow:hidden}
+.promise .p1{background:var(--good);opacity:.75}.promise .p2{background:var(--warn);opacity:.8}
+.promise .marks{position:relative;height:20px;font-size:13px;color:var(--muted)}
+.promise .marks span{position:absolute;top:4px;transform:translateX(-50%);white-space:nowrap}
+.promise .marks span:last-child{transform:translateX(-100%)}
+.promise .marks .bad{color:var(--bad);font-weight:600}
+.promise::after{content:"";position:absolute;right:0;top:-4px;width:3px;height:24px;background:var(--bad)}
+.hlbar{max-width:68ch;display:grid;gap:8px;margin:12px 0 16px}
+.hlbar .row{display:grid;grid-template-columns:130px 1fr 54px;align-items:center;gap:10px;font-size:14px}
+.hlbar .b{height:14px;border-radius:7px;display:block}
+.hlbar .ok{background:var(--good)}.hlbar .warn{background:var(--warn)}.hlbar .bad{background:var(--bad)}
+.hlbar .lab{color:var(--muted)}.hlbar .v{text-align:right;font-weight:600}
+.flowsimple{list-style:none;padding:0;margin:14px 0 8px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;counter-reset:f}
+.flowsimple li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px 12px;counter-increment:f;min-width:0}
+.flowsimple li b{display:block;color:var(--accent)}
+.flowsimple li b::before{content:"Bước " counter(f) " · ";color:var(--muted);font-weight:500}
+.flowsimple li span{font-size:14px;color:var(--muted)}
+@media (max-width:760px){.flowsimple{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.flowsimple{grid-template-columns:1fr}}
+.timeline{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.timeline>div{border-radius:6px;padding:8px 6px;text-align:center;font-size:13px;min-width:0;border:1px solid var(--line)}
+.timeline .tr{background:var(--tint)}.timeline .te{background:color-mix(in srgb,var(--warn) 18%,var(--surface))}
+.timeline b{display:block;font-size:14px}.timeline small{display:block;color:var(--muted)}
+@media (max-width:620px){.timeline{grid-template-columns:repeat(4,1fr)}}
+table.mini{width:auto;margin:6px 0 10px}table.mini td{padding:3px 10px 3px 0;border:0}
+.partdiv{padding-block:48px 8px;border-top:3px double var(--line);margin-top:24px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">Bài test ứng viên · sổ tay ôn tập</div>
+  <h1>Hiểu Bài I và Bài II bằng lời đơn giản</h1>
+  <p class="lead">Đọc theo thứ tự từ trên xuống. Phần A và B là phần cốt lõi, ít lý thuyết. Phần C là bản đào sâu có hình tương tác, chỉ đọc khi muốn hiểu kỹ hơn.</p>
+  <nav class="toc" aria-label="Mục lục">
+    <a href="#bai1-don-gian">A1. Bài I trong 5 phút</a><a href="#excel">A2. Đọc file Excel</a>
+    <a href="#bai2">B. Bài II trong 10 phút</a><a href="#dao-sau">C. Đào sâu Bài I (tương tác)</a>
+  </nav>
+</header>
+
+<!-- ================= PHẦN A1 ================= -->
+<section id="bai1-don-gian">
+  <span class="secnum">Phần A1 · Bài I</span>
+  <h2>Bài I trong 5 phút: chấm điểm cho một mô hình</h2>
+  <div class="prose">
+    <h3>Bối cảnh trong 3 câu</h3>
+    <ul>
+      <li>Ngân hàng có <b>3.698 khách</b>. Mô hình chấm điểm từng người: <b>điểm thấp = nguy hiểm</b>.</li>
+      <li>Một thời gian sau, ngân hàng biết thật ai trả nợ (good) và ai không (bad): <b>439 người bad</b>, khoảng 12%.</li>
+      <li>Việc của mình là <b>chấm điểm cho cái mô hình</b>: nó đoán có giỏi không.</li>
+    </ul>
+    <p>Mô hình làm hai việc, nên mình chấm hai việc:</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Việc</th><th>Câu hỏi đời thường</th><th>Công cụ</th></tr></thead>
+    <tbody>
+      <tr><td><b>Xếp thứ tự</b></td><td>Ai nguy hiểm hơn ai?</td><td>AUC / AR</td></tr>
+      <tr><td><b>Đoán con số</b></td><td>Nhóm này sẽ có bao nhiêu người vỡ nợ?</td><td>Binomial, Hosmer-Lemeshow</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="prose">
+    <h3>1. AUC: trò chơi "đoán ai nguy hiểm hơn"</h3>
+    <p>Bốc ngẫu nhiên <b>1 người bad và 1 người good</b>, rồi hỏi mô hình: "Ai nguy hiểm hơn?" Mô hình chọn người có điểm thấp hơn. Lặp lại thật nhiều lần:</p>
+  </div>
+  <div class="steps3">
+    <div><b class="num">50/100</b><span>Đoán bừa (tung đồng xu)</span></div>
+    <div class="hi"><b class="num">69/100</b><span>Mô hình của bài → AUC = 0,69</span></div>
+    <div><b class="num">100/100</b><span>Mô hình hoàn hảo</span></div>
+  </div>
+  <div class="prose">
+    <p><b>AR</b> là cùng con số đó, viết theo kiểu "đã đi được bao nhiêu phần đường từ đoán bừa đến hoàn hảo":</p>
+    <div class="formula">AR = (69 − 50) / (100 − 50) = 19/50 = 0,38</div>
+    <p>Kết luận: mô hình <b>có biết phân biệt, ở mức trung bình</b>.</p>
+
+    <h3>2. Binomial: lời hứa của từng nhóm có giữ được không?</h3>
+    <p>Mô hình chia khách thành 10 hạng, mỗi hạng kèm một <b>lời hứa</b>. Ví dụ hạng 5: "Trong 473 người này, khoảng <b>6,7%</b> sẽ vỡ nợ", tức khoảng <b>32 người</b>.</p>
+    <p>Thực tế sẽ không bao giờ đúng y 32 vì có may rủi. Giống tung đồng xu 100 lần: ra 46 hay 54 lần ngửa vẫn bình thường, nhưng ra 80 lần thì đồng xu có vấn đề. Phép tính binomial cho biết <b>may rủi giải thích được tới đâu</b>.</p>
+  </div>
+  <div class="promise" role="img" aria-label="Hạng 5: lời hứa 32, may rủi tối đa 41, thực tế 64">
+    <div class="bar"><span style="width:50%" class="p1"></span><span style="width:14%" class="p2"></span></div>
+    <div class="marks"><span style="left:50%">Hứa: 32</span><span style="left:64%">May rủi tối đa: 41</span><span style="left:100%" class="bad">Thực tế: 64</span></div>
+  </div>
+  <div class="prose">
+    <p>Hạng 5 có <b>64 người</b> vỡ nợ, vượt xa mức may rủi, nên lời hứa <b>sai</b>: mô hình hứa quá thấp. Làm như vậy cho 10 hạng: <b>8 hạng hứa sai</b>, đều theo kiểu hứa thấp hơn thực tế.</p>
+    <p><b>1 phía</b> chỉ bắt lỗi "hứa thấp quá", là lỗi nguy hiểm nhất cho ngân hàng. <b>2 phía</b> bắt cả "hứa thấp" lẫn "hứa cao".</p>
+
+    <h3>3. Hosmer-Lemeshow: chấm "điểm bất ngờ" cho cả 10 nhóm</h3>
+    <ol>
+      <li>Với mỗi hạng, chấm một <b>điểm bất ngờ</b>: đúng lời hứa = 0, lệch kiểu may rủi bình thường ≈ 1, lệch càng vô lý thì điểm càng cao.</li>
+      <li><b>Cộng điểm bất ngờ của 10 hạng</b>, được HL.</li>
+      <li>Nếu mô hình đúng, tổng chỉ quanh <b>10</b>. Trên <b>18</b> là đáng ngờ. Bài này ra <b>195</b>.</li>
+    </ol>
+  </div>
+  <div class="hlbar" role="img" aria-label="HL: bình thường khoảng 10, ngưỡng 18, bài này 195">
+    <div class="row"><span class="lab">Bình thường</span><span class="b ok" style="width:5%"></span><span class="v num">≈ 10</span></div>
+    <div class="row"><span class="lab">Ngưỡng nghi ngờ</span><span class="b warn" style="width:9.4%"></span><span class="v num">18,3</span></div>
+    <div class="row"><span class="lab">Bài này</span><span class="b bad" style="width:100%"></span><span class="v num">195</span></div>
+  </div>
+  <div class="prose">
+    <p>Lưu ý về <b>hạng 10</b>: chỉ 3 người vỡ nợ nhưng điểm bất ngờ lên tới 38, vì mô hình hứa gần như 0 người (0,2). Lời hứa quá nhỏ thì lệch một chút cũng bị phóng đại. Gộp hạng 9 và 10 lại để kiểm tra, kết luận vẫn không đổi.</p>
+  </div>
+  <div class="apply"><strong>Kết luận Bài I trong 1 câu</strong>Mô hình <b>xếp thứ tự tạm được</b> (AUC 0,69) nhưng <b>đoán tỷ lệ vỡ nợ thấp hơn thực tế</b> (hứa 8,2%, thực tế 11,9%), nên cần <b>chỉnh lại con số PD</b> (hiệu chuẩn lại), chưa cần làm lại mô hình.</div>
+</section>
+
+<!-- ================= PHẦN A2 ================= -->
+<section id="excel">
+  <span class="secnum">Phần A2 · Bài I</span>
+  <h2>Đọc file Excel, từng sheet</h2>
+  <div class="prose">
+    <p>Mẹo: <b>bấm vào bất kỳ ô số nào</b>, thanh công thức phía trên sẽ hiện cách tính. Cột màu <b>xám "Python"</b> là số mình tính bằng code để đối chiếu, nên khớp với cột bên cạnh.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Sheet</th><th>Nhìn vào đâu</th><th>Nó làm gì</th></tr></thead>
+    <tbody>
+      <tr><td><b>0_Tom_tat</b></td><td>Cả trang</td><td>Tất cả kết quả và kết luận. Người chấm đọc trang này trước.</td></tr>
+      <tr><td><b>MasterScale</b></td><td>Cận dưới, PD dự báo</td><td>Bảng đề cho: hạng 1 là điểm ≤ 450 với PD 27,5%, …, hạng 10 là điểm &gt; 850 với PD 0,1%. Cột "cận dưới" thêm vào để Excel tra cứu.</td></tr>
+      <tr><td><b>Data</b></td><td>Cột C, D</td><td>3.698 khách. Mỗi dòng: điểm → hạng (hàm <code>MATCH</code>), hạng → PD (hàm <code>INDEX</code>).</td></tr>
+      <tr><td><b>1_Bang_theo_hang</b><br><span class="en">quan trọng nhất</span></td><td>Cột C, D, F, G, H và biểu đồ</td><td>Theo từng hạng: số người (C), số bad (D), tỷ lệ bad thực tế (F), lời hứa PD (G), số bad mô hình hứa (H). So F với G là thấy vấn đề. Biểu đồ: cột xanh là thực tế, đường cam là lời hứa.</td></tr>
+      <tr><td><b>2_AUC_AR</b></td><td>Ô vàng B16, B17, 2 biểu đồ</td><td>Mỗi dòng là một ngưỡng "từ chối hạng 1 đến hạng này". Cột F = <b>TPR</b> (% bad bị bắt), cột G = <b>FPR</b> (% good bị từ chối nhầm), cột E = % khách bị từ chối (cho đường CAP); cả ba đều là số cộng dồn từ hạng 1. Nối các điểm (FPR, TPR) được đường ROC. Cột H là diện tích từng mảnh. Cộng lại được AUC (B16), từ đó ra AR (B17).</td></tr>
+      <tr><td><b>3_Binomial</b></td><td>Cột F, C, H, L, N</td><td><b>F</b> = số bad tối đa mà may rủi giải thích được. <b>C</b> = số bad thực tế. C &gt; F thì "hứa sai". H là p-value, L/M là kết luận, N là đèn màu.</td></tr>
+      <tr><td><b>4_Hosmer_Lemeshow</b></td><td>Cột F, ô vàng B15–B19</td><td>F = điểm bất ngờ từng hạng. B15 = tổng 195,4. B17 = ngưỡng 18,3. B18 = p-value. Bảng dưới là bản gộp hạng 9–10.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="apply"><strong>Thứ tự trình bày gợi ý</strong>0_Tom_tat → 1_Bang_theo_hang (chỉ vào biểu đồ) → 2_AUC_AR → 3_Binomial → 4_Hosmer_Lemeshow. Mỗi sheet nói 3 câu: <b>đo cái gì → ra bao nhiêu → nghĩa là gì</b>.</div>
+</section>
+
+<!-- ================= PHẦN B ================= -->
+<section id="bai2">
+  <span class="secnum">Phần B · Bài II</span>
+  <h2>Bài II trong 10 phút: dạy máy đoán ai sẽ không trả nợ</h2>
+  <div class="prose">
+    <p>Có <b>41.022 người</b> đã vay qua một app cho vay (dữ liệu nhiều khả năng ở Indonesia, tháng 1–7/2018). Ta biết ai trả được và ai không (<b>13% bad</b>). Ta muốn máy nhìn thông tin lúc nộp đơn rồi <b>đoán trước</b> khả năng không trả nợ. Kết quả là một con số PD, đúng loại mô hình mà Bài I đem đi kiểm định.</p>
+    <p>Cả bài đi qua 6 bước. Mỗi bước có một câu hỏi đời thường:</p>
+  </div>
+  <ol class="flowsimple">
+    <li><b>Tạo biến</b><span>Một người thẩm định giỏi sẽ để ý điều gì trong hồ sơ?</span></li>
+    <li><b>Chia dữ liệu</b><span>Training, validation và test set</span></li>
+    <li><b>Chọn biến</b><span>Thông tin nào thật sự giúp phân biệt good và bad?</span></li>
+    <li><b>Hai mô hình</b><span>Bảng cộng điểm hay hội đồng chấm?</span></li>
+    <li><b>Đánh giá</b><span>Đoán có giỏi trên khách mới không? (dùng lại Bài I)</span></li>
+    <li><b>Chọn mô hình</b><span>Giỏi hơn có đáng đổi lấy khó giải thích hơn không?</span></li>
+  </ol>
+
+  <div class="prose">
+    <h3>Bước 1. Tạo biến: biến dữ liệu thô thành tín hiệu</h3>
+    <p>Máy không hiểu được một danh sách 40 tên app hay một chuỗi JSON thống kê cuộc gọi. Ta phải tóm tắt thành con số có ý nghĩa, bằng cách tự hỏi <b>"nếu tự xét hồ sơ, mình sẽ để ý điều gì?"</b>:</p>
+    <ul>
+      <li>Danh sách app → <b>số app vay tiền</b> (người đang vay nhiều nơi), số app ngân hàng, tổng số app.</li>
+      <li>Thống kê cuộc gọi → tổng số cuộc gọi, % gọi ngày/đêm (mức độ hoạt động).</li>
+      <li>Facebook → <b>tuổi trên FB có lệch tuổi khai báo không</b>, giới tính có khớp không (dấu hiệu khai gian).</li>
+      <li>Bỏ những cột gần như chỉ có một giá trị (loại chỗ ở, mã quốc gia), vì chúng không giúp phân biệt ai.</li>
+    </ul>
+    <p>Nguyên tắc quan trọng: <b>chỉ dùng thông tin có tại lúc nộp đơn</b>, không dùng thông tin "tương lai".</p>
+
+    <h3>Bước 2. Chia dữ liệu: training, validation và test set</h3>
+    <p>Dữ liệu được chia thành 3 tập:</p>
+    <ul>
+      <li><b>Training set</b> (75% hồ sơ tháng 1–5): dùng để huấn luyện mô hình.</li>
+      <li><b>Validation set</b> (25% hồ sơ tháng 1–5): dùng để so sánh và phát hiện overfitting trong lúc xây mô hình.</li>
+      <li><b>Test set out-of-time</b> (toàn bộ tháng 6–7): đánh giá cuối cùng trên dữ liệu mô hình chưa từng thấy.</li>
+    </ul>
+    <p>Vì sao test set là 2 tháng cuối thay vì chia ngẫu nhiên? Khi đem dùng thật, mô hình luôn chấm cho khách hàng <b>trong tương lai</b>. Test trên các tháng sau mô phỏng đúng tình huống đó. (Dễ nhớ: giống ôn bài cũ rồi thi đề mới.)</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="figtitle">Số hồ sơ và tỷ lệ bad theo tháng</div>
+    <div class="timeline" id="b2months"></div>
+    <figcaption>Tháng 1–5 (xanh): training set (75%) và validation set (25%). Tháng 6–7 (cam): test set out-of-time, chỉ dùng một lần ở cuối.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Bước 3. Chọn biến: chia nhóm rồi xem tỷ lệ bad</h3>
+    <p>Với mỗi biến, chia khách thành vài nhóm và xem <b>tỷ lệ bad của từng nhóm</b>. Các nhóm càng khác nhau thì biến càng có ích. Biến mạnh nhất trong bài:</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="grid2">
+      <div><div class="figtitle">Số app vay trong máy</div><div id="b2loan"></div></div>
+      <div><div class="figtitle">Tổng số app trong máy</div><div id="b2apps"></div></div>
+    </div>
+    <figcaption>Đường gạch: tỷ lệ bad trung bình 12,9%. Người có từ 3 app vay trở lên rủi ro gấp hơn 3 lần người không có app vay nào. Người có ít app thì rủi ro cao hơn (có thể là máy mới, cài vội để vay).</figcaption>
+  </figure>
+  <div class="prose">
+    <p>Hai từ chuyên môn cần nhớ:</p>
+    <ul>
+      <li><b>WOE</b> là "điểm rủi ro" của một nhóm so với trung bình: dương là an toàn hơn, âm là rủi ro hơn.</li>
+      <li><b>IV</b> là sức dự báo của cả biến: dưới 0,02 vô dụng, 0,02–0,1 yếu, 0,1–0,3 trung bình. Số app vay có IV = 0,28, mạnh nhất bài.</li>
+    </ul>
+    <p>Quy tắc chọn: giữ biến có IV ≥ 0,02; bỏ biến trùng thông tin với biến khác; bỏ biến cho kết quả ngược logic. Kết quả còn <b>11 biến</b>. Điều thú vị: <b>tuổi, lương, giới tính gần như không có tác dụng</b>, còn hành vi trên điện thoại thì có.</p>
+
+    <h3>Bước 4. Hai mô hình: bảng cộng điểm và hội đồng chấm</h3>
+  </div>
+  <div class="pair">
+    <div><h4>Logistic regression (scorecard)</h4>
+      <p>Giống một <b>bảng cộng điểm</b>. Mỗi đặc điểm cho một số điểm, cộng lại thành tổng điểm. Điểm càng cao càng an toàn.</p>
+      <table class="mini"><tbody>
+        <tr><td>0 app vay</td><td class="num">+95</td></tr><tr><td>1 app vay</td><td class="num">+70</td></tr>
+        <tr><td>2 app vay</td><td class="num">+42</td></tr><tr><td>3+ app vay</td><td class="num">−44</td></tr>
+      </tbody></table>
+      <p class="en">Dễ giải thích vì sao khách bị từ chối. Ngân hàng rất thích. Cùng kiểu điểm với Bài I.</p></div>
+    <div><h4>Gradient Boosting</h4>
+      <p>Giống <b>một hội đồng gồm hàng trăm người chấm nhỏ</b>. Mỗi người hỏi vài câu ("có hơn 2 app vay không? thâm niên dưới 1 năm không?"). Người sau tập trung sửa các ca người trước đoán sai.</p>
+      <p>Mạnh hơn vì bắt được các <b>kết hợp</b> (nhiều app vay <i>và</i> ít cuộc gọi), nhưng khó giải thích hơn và dễ <b>overfitting</b> (học thuộc dữ liệu train thay vì học quy luật chung).</p>
+      <p class="en">Chống overfitting: mỗi "người chấm" chỉ được hỏi ít câu, mỗi nhánh tối thiểu 500 hồ sơ, dừng sớm khi điểm kiểm tra không tăng nữa.</p></div>
+  </div>
+
+  <div class="prose">
+    <h3>Bước 5. Đánh giá: so sánh training, validation và test set</h3>
+    <p>Dùng lại AUC của Bài I. Hình dưới so sánh AUC trên training set, validation set và test set (tháng 6–7).</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div><span class="key"><i style="background:var(--accent)"></i>Logistic (scorecard)</span><span class="key"><i style="background:var(--warn)"></i>Gradient Boosting</span></div>
+    <div id="b2perf"></div>
+    <figcaption>Logistic: AUC trên training và test set gần như bằng nhau (ổn định nhưng không quá giỏi). Boosting: AUC trên training set cao hơn test set khá nhiều (có overfitting một phần), <b>nhưng AUC trên test set vẫn cao hơn Logistic</b>. Kết quả trên test set mới là quan trọng nhất.</figcaption>
+  </figure>
+  <div class="prose">
+    <p>Tiếp theo là kiểm tra <b>"lời hứa"</b> giống hệt Bài I: chia khách trong test set thành 10 nhóm theo mức rủi ro, rồi so tỷ lệ bad thực tế với PD mô hình hứa.</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="figtitle">Gradient Boosting trên test set (tháng 6–7): lời hứa và thực tế</div>
+    <div><span class="key"><i style="background:var(--accent)"></i>Tỷ lệ bad thực tế</span><span class="key"><i style="background:var(--warn)"></i>PD mô hình hứa</span></div>
+    <div id="b2dec"></div>
+    <figcaption>Thứ tự đúng (nhóm 1 rủi ro nhất ≈ 43% bad, nhóm 10 ≈ 1,7%) và <b>lời hứa khớp thực tế</b>. Hosmer-Lemeshow = 5,5, thấp hơn nhiều so với ngưỡng 18,3. Đây là điểm khác biệt lớn so với mô hình trong Bài I.</figcaption>
+  </figure>
+  <div class="prose">
+    <p>Thêm một kiểm tra: <b>PSI</b> đo xem phân phối điểm có bị dịch chuyển giữa lúc học và lúc thi không. Dưới 0,1 là ổn định; bài này ra 0,003.</p>
+
+    <h3>Bước 6. Chọn mô hình</h3>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Logistic (scorecard)</th><th>Gradient Boosting</th></tr></thead>
+    <tbody>
+      <tr><td>AUC trên test set</td><td class="num">0,729</td><td class="num"><b>0,774</b></td></tr>
+      <tr><td>Gini (= 2×AUC − 1)</td><td class="num">0,46</td><td class="num"><b>0,55</b></td></tr>
+      <tr><td>Lời hứa khớp thực tế (HL)</td><td>Đạt (10,6)</td><td>Đạt (5,5)</td></tr>
+      <tr><td>Ổn định (PSI)</td><td>Đạt (0,005)</td><td>Đạt (0,003)</td></tr>
+      <tr><td>Dễ giải thích</td><td><b>Rất dễ</b></td><td>Khó hơn</td></tr>
+    </tbody>
+  </table></div>
+  <div class="apply"><strong>Kết luận Bài II trong 1 câu</strong>Chọn <b>Gradient Boosting</b> vì đoán giỏi hơn rõ rệt trên khách mới, vẫn ổn định và giữ đúng lời hứa. Giữ <b>Logistic scorecard</b> làm phương án dự phòng khi ngân hàng cần giải thích từng điểm số. Tín hiệu mạnh nhất là <b>số app vay trong máy</b>.</div>
+
+  <div class="prose">
+    <h3>Những điều nên tự nhận là chưa làm (thể hiện đúng vai junior)</h3>
+    <ul>
+      <li>Cách đếm app vay còn thô (dựa trên từ khóa trong tên app).</li>
+      <li>Chưa dò tham số có hệ thống cho Boosting.</li>
+      <li>Chưa giải thích được từng khách hàng (cần SHAP).</li>
+      <li>Không biết "bad" được định nghĩa là quá hạn bao nhiêu ngày.</li>
+      <li>Dữ liệu chỉ có người đã được duyệt vay, chưa thấy người bị từ chối (reject inference).</li>
+      <li>Chưa kiểm tra mô hình có công bằng giữa các nhóm (ví dụ giới tính).</li>
+    </ul>
+    <h3>Câu hỏi phỏng vấn nên tập trả lời</h3>
+    <ol>
+      <li>Vì sao chia theo thời gian mà không chia ngẫu nhiên?</li>
+      <li>WOE và IV là gì? Vì sao ngưỡng 0,02?</li>
+      <li>Vì sao loại biến có hệ số ngược dấu?</li>
+      <li>Boosting overfitting tới mức nào, làm sao biết vẫn dùng được?</li>
+      <li>Nếu ngân hàng yêu cầu giải thích lý do từ chối thì chọn mô hình nào?</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= PHẦN C ================= -->
+<div class="partdiv" id="dao-sau">
+  <span class="secnum">Phần C · tùy chọn</span>
+  <h2>Đào sâu Bài I với hình tương tác</h2>
+  <p class="lead">Phần này giải thích lại Bài I chi tiết hơn: kéo thanh trượt, bấm nút để thấy từng chỉ số được tạo ra như thế nào. Chỉ đọc khi đã nắm phần A.</p>
+</div>
+
+<section id="hai-cau-hoi">
+  <span class="secnum">Phần C1</span>
+  <h2>Một mô hình PD phải trả lời đúng hai câu hỏi khác nhau</h2>
+  <div class="prose">
+    <p>Mô hình chấm điểm mỗi khách hàng. Điểm thấp nghĩa là rủi ro cao. Sau đó Master Scale đổi điểm thành một con số PD (xác suất vỡ nợ trong 12 tháng). Khi kiểm định, ta hỏi hai việc độc lập:</p>
+  </div>
+  <div class="pair">
+    <div><h4>Xếp hạng có đúng không?</h4><p>Khách bad có thường bị chấm điểm thấp hơn khách good không? Chỉ quan tâm <b>thứ tự</b>, không quan tâm con số PD.</p><p class="en">Discrimination → AUC, AR</p></div>
+    <div><h4>Con số PD có đúng không?</h4><p>Nhóm được dự báo PD 6,7% thì thực tế có khoảng 6,7% vỡ nợ không? Quan tâm <b>mức độ</b>.</p><p class="en">Calibration → Binomial, Hosmer-Lemeshow</p></div>
+  </div>
+  <div class="prose"><p>Ví dụ dễ hình dung: một người dự báo thời tiết luôn nói "mưa 10%" vào ngày mưa và "mưa 2%" vào ngày nắng. Thứ tự hoàn toàn đúng (ngày mưa luôn có số cao hơn) nhưng con số thì sai (ngày mưa lẽ ra phải gần 100%). Mô hình trong bài đang ở tình trạng giống vậy.</p></div>
+</section>
+
+<section id="roc">
+  <span class="secnum">Phần C2</span>
+  <h2>ROC và AUC: đo khả năng xếp hạng</h2>
+  <div class="prose">
+    <h3>Bước 1. Bắt đầu từ một ngưỡng cắt</h3>
+    <p>Giả sử ngân hàng chọn một ngưỡng: <b>từ chối mọi khách có điểm ≤ ngưỡng</b>. Với ngưỡng đó ta đếm được hai tỷ lệ:</p>
+    <ul>
+      <li><b style="color:var(--bad)">TPR</b> (tỷ lệ bắt đúng): bao nhiêu % khách bad bị từ chối. Càng cao càng tốt.</li>
+      <li><b style="color:var(--good)">FPR</b> (tỷ lệ từ chối nhầm): bao nhiêu % khách good cũng bị từ chối. Càng thấp càng tốt.</li>
+    </ul>
+    <p>Hình dưới là phân phối điểm của hai nhóm, mỗi nhóm tính theo % trong chính nhóm đó. Hai "ngọn đồi" càng tách xa nhau thì mô hình phân biệt càng tốt.</p>
+  </div>
+
+  <figure class="fig" style="margin-inline:0">
+    <div class="figtitle">Phân phối điểm của khách good và bad</div>
+    <div class="controls">
+      <label for="cut">Ngưỡng từ chối: điểm ≤ <b class="num" id="cutv">600</b></label>
+      <input type="range" id="cut" min="430" max="920" step="5" value="600">
+    </div>
+    <div><span class="key"><i style="background:var(--good)"></i>Good (3.259 khách)</span><span class="key"><i style="background:var(--bad)"></i>Bad (439 khách)</span></div>
+    <div class="grid2">
+      <div id="histo"></div>
+      <div id="rocplot"></div>
+    </div>
+    <div class="readout" id="cutread"></div>
+    <figcaption>Bên trái: vùng tô đậm là phần bị từ chối. Bên phải: mỗi ngưỡng cho một điểm (FPR, TPR). Kéo ngưỡng từ trái sang phải, điểm đó đi từ góc (0,0) lên góc (1,1). Đường nó đi qua gọi là <b>đường ROC</b>.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Bước 2. AUC = diện tích dưới đường ROC</h3>
+    <p>Mỗi ngưỡng là một sự đánh đổi giữa bắt được nhiều bad và từ chối nhầm ít good. Ta không muốn chấm mô hình theo một ngưỡng cụ thể, nên ta lấy <b>diện tích dưới toàn bộ đường ROC</b>. Đó là AUC.</p>
+    <ul>
+      <li>Mô hình đoán bừa: đường ROC trùng đường chéo, AUC = 0,5.</li>
+      <li>Mô hình hoàn hảo: đường ROC đi thẳng lên góc trên bên trái, AUC = 1.</li>
+      <li>Mô hình trong bài: <b class="num" id="aucv">0,692</b> (vùng tô màu ở hình phải).</li>
+    </ul>
+
+    <h3>Bước 3. Ý nghĩa xác suất của AUC (dễ nhớ nhất)</h3>
+    <p>AUC còn có một nghĩa rất trực quan: <b>chọn ngẫu nhiên 1 khách bad và 1 khách good. AUC là xác suất khách bad có điểm thấp hơn</b>, tức là mô hình xếp đúng thứ tự cho cặp đó. Hai cách hiểu này cho ra cùng một con số. Thử rút các cặp ngẫu nhiên từ dữ liệu:</p>
+  </div>
+
+  <figure class="fig" style="margin-inline:0">
+    <div class="figtitle">Rút ngẫu nhiên các cặp (bad, good)</div>
+    <div class="controls">
+      <button id="pair1" type="button">Rút 1 cặp</button>
+      <button id="pair100" type="button">Rút 100 cặp</button>
+      <button id="pair5000" type="button">Rút 5.000 cặp</button>
+      <button id="pairReset" type="button">Làm lại</button>
+    </div>
+    <div class="readout" id="pairread"><span>Bấm nút để bắt đầu.</span></div>
+    <div class="tally" id="tally" aria-hidden="true"></div>
+    <figcaption>Chấm <span style="color:var(--accent)">xanh đậm</span> = xếp đúng (bad điểm thấp hơn), chấm <span style="color:var(--bad)">đỏ</span> = xếp sai. Hòa điểm tính nửa. Rút càng nhiều, tỷ lệ xếp đúng càng tiến về AUC.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Bước 4. Accuracy Ratio (Gini) và đường CAP</h3>
+    <p>Ngân hàng hay báo cáo <b>AR</b> thay cho AUC. AR thu thang đo về khoảng 0 (đoán bừa) đến 1 (hoàn hảo):</p>
+    <div class="formula">AR = 2 × AUC − 1 = 2 × 0,692 − 1 = 0,385</div>
+    <p>AR được định nghĩa trên <b>đường CAP</b>: xếp khách từ rủi ro nhất đến an toàn nhất, trục ngang là % khách đã xét, trục dọc là % bad đã "bắt" được. AR = diện tích giữa CAP mô hình và đường chéo, chia cho diện tích tương ứng của mô hình hoàn hảo (mô hình hoàn hảo bắt hết 11,9% khách bad ngay trong 11,9% khách đầu tiên).</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="grid2">
+      <div id="capplot"></div>
+      <div id="scale"></div>
+    </div>
+    <figcaption>Trái: đường CAP của mô hình (xanh đậm, liền) nằm giữa đường đoán bừa (đường thẳng chéo, nét đứt xám) và mô hình hoàn hảo (xanh lá: đi thẳng lên 100% tại 11,9% khách rồi bẻ góc đi ngang). AR = vùng A / (vùng A + vùng B). Phải: AUC của bài đặt trên thang đánh giá thường dùng cho mô hình bán lẻ.</figcaption>
+  </figure>
+  <div class="apply"><strong>Áp vào bài</strong>AUC = 0,692 và AR = 0,385: khả năng phân biệt ở mức trung bình, sát ngưỡng 0,7. Mô hình xếp hạng có ích nhưng chưa mạnh. Lưu ý: AUC <b>không nói gì</b> về việc con số PD đúng hay sai. Phần đó cần đến hai test tiếp theo.</div>
+</section>
+
+<section id="binomial">
+  <span class="secnum">Phần C3</span>
+  <h2>Binomial test: con số PD của một hạng có đáng tin không?</h2>
+  <div class="prose">
+    <p>Nếu PD dự báo của một hạng là đúng, mỗi khách trong hạng giống như một lần tung đồng xu lệch, với xác suất ra "vỡ nợ" bằng PD. Khi đó số khách vỡ nợ trong hạng tuân theo <b>phân phối nhị thức</b> Bin(n, PD). Ta biết trước những kết quả nào là "bình thường".</p>
+    <p>Sau đó ta đặt số bad thực tế lên phân phối này. Nếu nó rơi vào phần đuôi quá xa (xác suất xảy ra &lt; 5%), ta kết luận PD dự báo sai. Phần diện tích đuôi đó chính là <b>p-value</b>.</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="figtitle">Nếu PD đúng, số bad của hạng sẽ phân bố thế nào?</div>
+    <div class="controls">
+      <label for="gsel">Chọn hạng</label>
+      <select id="gsel"></select>
+    </div>
+    <div id="binplot"></div>
+    <div class="readout" id="binread"></div>
+    <figcaption>Cột xám: xác suất của từng số bad có thể xảy ra nếu PD đúng. Vạch vàng: ngưỡng 95%, vượt qua thì bác bỏ. Vạch đỏ: số bad thực tế. Cột tô đỏ: phần đuôi P(X ≥ số bad thực tế) = p-value 1 phía.</figcaption>
+  </figure>
+  <div class="prose">
+    <p><b>1 phía hay 2 phía?</b> Kiểm định 1 phía chỉ hỏi "PD có bị đánh giá <i>thấp</i> không", là điều ngân hàng lo nhất vì sẽ trích lập dự phòng thiếu. Kiểm định 2 phía hỏi "PD có <i>khác</i> thực tế không", tức nhìn cả hai đuôi. Thử chọn hạng 1: số bad thực tế nằm ở đuôi <i>trái</i>, nghĩa là PD hơi cao, một sai lệch theo hướng thận trọng.</p>
+  </div>
+  <div class="apply"><strong>Áp vào bài</strong>Hạng 3 đến 10 đều có số bad thực tế vượt xa ngưỡng 95%. Có 8/10 hạng bị bác bỏ, và đều theo cùng một hướng: PD quá thấp.</div>
+</section>
+
+<section id="hl">
+  <span class="secnum">Phần C4</span>
+  <h2>Hosmer-Lemeshow: gộp sai lệch của mọi hạng thành một con số</h2>
+  <div class="prose">
+    <p>Binomial test cho ra 10 kết luận riêng lẻ, mỗi hạng một kết luận. Hosmer-Lemeshow (HL) trả lời một câu hỏi duy nhất: <b>nhìn chung cả danh mục, PD có khớp thực tế không?</b> Cách làm có ba bước.</p>
+
+    <h3>Bước 1. So sánh số bad thực tế (O) và kỳ vọng (E) ở từng hạng</h3>
+    <p>E = n × PD là số bad mô hình dự báo. O là số bad thực tế. Nếu mô hình đúng, các cặp cột sẽ cao gần bằng nhau.</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div><span class="key"><i style="background:var(--bad)"></i>Thực tế (O)</span><span class="key"><i style="background:var(--muted)"></i>Kỳ vọng (E = n × PD)</span></div>
+    <div id="oeplot"></div>
+  </figure>
+
+  <div class="prose">
+    <h3>Bước 2. Chuẩn hóa độ lệch rồi bình phương</h3>
+    <p>Lệch 10 ca ở hạng có 83 ca kỳ vọng thì bình thường, nhưng lệch 3 ca ở hạng chỉ kỳ vọng 0,2 ca thì rất bất thường. Vì vậy ta chia độ lệch cho độ lệch chuẩn của phân phối nhị thức, rồi bình phương để lệch lên hay lệch xuống đều tính là sai:</p>
+    <div class="formula">z<sub>i</sub> = (O<sub>i</sub> − E<sub>i</sub>) / √(n<sub>i</sub>·PD<sub>i</sub>·(1 − PD<sub>i</sub>))  →  HL = Σ z<sub>i</sub>²</div>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="figtitle">Đóng góp z² của từng hạng vào HL</div>
+    <div><span class="key"><i style="background:var(--accent)"></i>z² của hạng</span><span class="key"><i style="background:var(--good);height:2px"></i>mức bình thường ≈ 1 nếu PD đúng</span></div>
+    <div id="z2plot"></div>
+    <figcaption>Cộng 10 cột lại được HL = 195,4. Hạng 10 chỉ có 3 ca bad nhưng đóng góp 37,7, vì kỳ vọng ở đó chỉ 0,2 ca.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Bước 3. HL = 195 là lớn hay nhỏ? So với phân phối χ²</h3>
+    <p>Đây là ý quan trọng nhất. <b>Nếu PD đúng</b>, mỗi z<sub>i</sub> chỉ là nhiễu ngẫu nhiên quanh 0, và z² trung bình bằng khoảng 1. Cộng 10 hạng lại, HL thường dao động quanh 10. Thống kê học gọi phân phối này là <b>χ² với 10 bậc tự do</b>. Khi đó HL chỉ vượt 18,3 với xác suất 5%.</p>
+    <p>Bạn có thể tự kiểm chứng: bấm nút để máy giả lập 1.000 danh mục mà PD <i>đúng tuyệt đối</i>, rồi xem HL của chúng rơi vào đâu.</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="figtitle">HL của các danh mục giả lập (PD đúng) so với HL thực tế</div>
+    <div class="controls">
+      <button id="sim" type="button">Giả lập lại 1.000 danh mục</button>
+    </div>
+    <div id="simplot"></div>
+    <div class="readout" id="simread"></div>
+    <figcaption>Cột: HL của các danh mục giả lập. Đường cong: phân phối χ²(10) lý thuyết. Vạch vàng: ngưỡng 18,3. HL thực tế của bài = 195,4, nằm xa ngoài khung hình. Xác suất có HL lớn như vậy nếu PD đúng chỉ khoảng 1,5×10⁻³⁶.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Thử nghiệm: nếu nhân mọi PD với một hệ số thì sao?</h3>
+    <p>Phần này giúp hiểu khuyến nghị "hiệu chuẩn lại". Kéo hệ số để nâng toàn bộ PD lên và xem HL thay đổi.</p>
+  </div>
+  <figure class="fig" style="margin-inline:0">
+    <div class="controls">
+      <label for="mult">PD mới = PD × <b class="num" id="multv">1,00</b></label>
+      <input type="range" id="mult" min="0.8" max="2.2" step="0.01" value="1">
+    </div>
+    <div id="multplot"></div>
+    <div class="readout" id="multread"></div>
+    <figcaption>HL giảm mạnh khi nâng PD lên, nhưng không bao giờ xuống dưới ngưỡng 18,3. Nhân đều một hệ số không đủ: hạng tốt cần tăng nhiều hơn hạng xấu (hạng 1 thậm chí đang hơi cao). Vì vậy cần hiệu chuẩn lại theo từng vùng điểm, chứ không chỉ nhân đều.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Hai chi tiết kỹ thuật hay bị hỏi</h3>
+    <ul>
+      <li><b>Bậc tự do = 10 hay 8?</b> Khi kiểm định trên chính dữ liệu dùng để xây mô hình, ta trừ 2 (df = k − 2) vì mô hình đã "học" từ dữ liệu đó. Ở đây PD đã cố định từ trước, ta chỉ đem đi kiểm tra, nên df = số hạng = 10.</li>
+      <li><b>Kỳ vọng nhỏ:</b> xấp xỉ χ² chỉ tốt khi mỗi hạng có ít nhất khoảng 5 ca kỳ vọng. Hạng 9 (1,8) và hạng 10 (0,2) vi phạm điều này. Gộp hai hạng lại thì HL = 174,1, vẫn bác bỏ.</li>
+    </ul>
+  </div>
+  <div class="apply"><strong>Áp vào bài</strong>HL = 195,4 so với ngưỡng 18,3, nên bác bỏ rất mạnh. PD dự báo không khớp thực tế trên toàn danh mục, chủ yếu do PD quá thấp ở các hạng giữa và hạng tốt.</div>
+</section>
+
+<section id="tom-tat">
+  <span class="secnum">Phần C5</span>
+  <h2>Tóm tắt một trang</h2>
+  <div class="tbl">
+  <table>
+    <thead><tr><th>Chỉ số</th><th>Hỏi gì</th><th>Đo thế nào</th><th>Đọc kết quả</th><th>Bài này</th></tr></thead>
+    <tbody>
+      <tr><td><b>AUC</b><br><span class="en">ROC</span></td><td>Bad có bị chấm rủi ro hơn good không?</td><td>Diện tích dưới đường ROC; hoặc tỷ lệ cặp (bad, good) xếp đúng</td><td>0,5 đoán bừa · 0,7–0,8 tốt · 1 hoàn hảo</td><td class="num">0,692</td></tr>
+      <tr><td><b>AR / Gini</b><br><span class="en">CAP</span></td><td>Như AUC, thang 0–1</td><td>2 × AUC − 1, hoặc diện tích trên đường CAP</td><td>0 đoán bừa · 1 hoàn hảo</td><td class="num">0,385</td></tr>
+      <tr><td><b>Binomial</b></td><td>PD của <i>từng hạng</i> có đúng không?</td><td>Đặt số bad thực tế lên Bin(n, PD), tính đuôi</td><td>p &lt; 5% thì PD sai ở hạng đó</td><td>8/10 hạng sai</td></tr>
+      <tr><td><b>Hosmer-Lemeshow</b></td><td>PD của <i>cả danh mục</i> có đúng không?</td><td>Σ (O−E)² / (n·PD·(1−PD)), so với χ²(10)</td><td>HL &gt; 18,3 (p &lt; 5%) thì bác bỏ</td><td class="num">195,4</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="apply"><strong>Câu kết luận để nói khi phỏng vấn</strong>"Mô hình xếp hạng đúng thứ tự với khả năng phân biệt trung bình (AUC 0,69), nhưng PD bị đánh giá thấp có hệ thống (bình quân 8,2% so với thực tế 11,9%), bị cả Binomial lẫn Hosmer-Lemeshow bác bỏ. Vì vậy cần hiệu chuẩn lại PD thay vì xây lại mô hình."</div>
+</section>
+</div>
+
+<script>
+const RAW = {"431":[5,2],"432":[4,2],"433":[6,2],"434":[7,1],"435":[4,1],"436":[4,9],"437":[9,5],"438":[9,4],"439":[17,1],"440":[18,3],"441":[12,7],"442":[18,6],"443":[12,1],"444":[11,5],"445":[25,4],"446":[15,2],"447":[13,8],"448":[12,3],"449":[18,1],"450":[14,3],"451":[4,3],"452":[10,3],"453":[6,2],"454":[10,3],"455":[4,4],"456":[7,2],"457":[8,1],"458":[3,1],"459":[7,1],"460":[8,1],"461":[11,4],"462":[11,2],"463":[8,5],"464":[10,1],"465":[4,3],"466":[8,1],"467":[12,3],"468":[7,3],"469":[5,1],"470":[11,1],"471":[7,2],"472":[7,0],"473":[12,1],"474":[2,4],"475":[12,2],"476":[4,2],"477":[8,3],"478":[8,0],"479":[6,0],"500":[7,3],"501":[5,0],"502":[3,0],"503":[8,0],"504":[13,0],"505":[6,0],"506":[14,0],"507":[11,1],"508":[5,3],"509":[13,2],"510":[8,0],"511":[2,2],"512":[10,6],"513":[8,0],"514":[6,2],"515":[7,3],"516":[7,4],"517":[3,3],"518":[8,3],"519":[5,1],"520":[6,1],"521":[4,1],"522":[9,1],"523":[5,1],"524":[7,0],"525":[8,1],"526":[13,1],"527":[10,3],"528":[10,1],"529":[3,2],"530":[6,1],"531":[13,3],"532":[5,2],"533":[5,3],"534":[10,1],"535":[6,2],"536":[5,1],"537":[3,0],"538":[7,3],"539":[11,0],"540":[7,3],"541":[11,2],"542":[6,4],"543":[6,2],"544":[6,4],"545":[8,2],"546":[8,4],"547":[9,2],"548":[9,1],"549":[12,1],"550":[6,1],"551":[8,0],"552":[7,0],"553":[4,0],"554":[13,1],"555":[7,0],"556":[9,0],"557":[8,1],"558":[9,0],"559":[9,0],"560":[12,0],"561":[12,0],"562":[9,0],"563":[5,0],"564":[13,0],"565":[10,0],"566":[8,0],"567":[8,2],"568":[8,3],"569":[7,5],"570":[7,1],"571":[8,3],"572":[5,2],"573":[5,2],"574":[9,1],"575":[6,1],"576":[6,0],"577":[3,2],"578":[7,4],"579":[4,3],"580":[3,1],"581":[3,4],"582":[2,0],"583":[11,2],"584":[12,2],"585":[3,1],"586":[11,1],"587":[5,1],"588":[8,2],"589":[5,1],"590":[5,6],"591":[6,4],"592":[7,4],"593":[10,0],"594":[8,1],"595":[1,2],"596":[6,2],"597":[10,0],"598":[3,1],"599":[7,3],"600":[7,0],"601":[5,0],"602":[9,0],"603":[20,0],"604":[5,0],"605":[15,0],"606":[7,0],"607":[6,0],"608":[5,1],"609":[7,0],"610":[10,1],"611":[11,0],"612":[11,0],"613":[12,0],"614":[8,0],"615":[9,0],"616":[6,3],"617":[10,1],"618":[13,0],"619":[7,1],"620":[7,1],"621":[4,3],"622":[11,1],"623":[8,1],"624":[8,1],"625":[12,1],"626":[4,3],"627":[4,0],"628":[8,3],"629":[5,3],"630":[9,3],"631":[7,6],"632":[5,0],"633":[9,1],"634":[8,1],"635":[10,3],"636":[9,0],"637":[10,6],"638":[8,0],"639":[6,4],"640":[8,2],"641":[5,0],"642":[4,4],"643":[7,3],"644":[6,2],"645":[9,0],"646":[8,1],"647":[7,1],"648":[7,1],"649":[8,2],"650":[12,0],"651":[8,0],"652":[4,0],"654":[3,0],"655":[4,0],"656":[5,0],"657":[9,0],"658":[5,0],"659":[12,0],"660":[9,2],"661":[10,1],"662":[3,1],"663":[12,2],"664":[5,2],"665":[7,0],"666":[9,0],"667":[6,3],"668":[10,1],"669":[7,1],"670":[8,2],"671":[5,4],"672":[5,2],"673":[5,1],"674":[6,4],"675":[5,1],"676":[7,1],"677":[8,4],"678":[3,0],"679":[11,2],"680":[9,3],"681":[11,0],"682":[5,1],"683":[7,1],"684":[12,3],"685":[7,0],"686":[7,0],"687":[4,0],"688":[6,0],"689":[10,0],"690":[7,0],"691":[10,0],"692":[9,0],"693":[13,0],"694":[13,0],"695":[9,0],"696":[5,0],"697":[10,0],"698":[15,0],"699":[3,0],"700":[8,0],"701":[3,0],"703":[1,0],"704":[3,0],"705":[4,0],"706":[13,0],"707":[5,3],"708":[6,0],"709":[11,0],"710":[10,2],"711":[8,1],"712":[6,0],"713":[7,0],"714":[5,1],"715":[6,0],"716":[8,1],"717":[12,0],"718":[8,0],"719":[3,0],"720":[14,1],"721":[10,1],"722":[6,0],"723":[4,1],"724":[5,1],"725":[15,0],"726":[9,1],"727":[7,0],"728":[12,0],"729":[14,0],"730":[7,1],"731":[9,0],"732":[10,1],"733":[12,0],"734":[4,2],"735":[7,1],"736":[5,1],"737":[12,0],"738":[14,0],"739":[9,0],"740":[5,1],"741":[7,0],"742":[12,0],"743":[6,1],"744":[16,0],"745":[9,1],"746":[11,0],"747":[9,0],"748":[14,3],"749":[11,0],"750":[0,1],"751":[0,1],"752":[0,1],"753":[0,1],"754":[0,1],"755":[0,1],"756":[0,1],"757":[0,1],"758":[0,1],"759":[0,1],"760":[1,0],"761":[1,0],"762":[1,0],"763":[8,0],"764":[15,0],"765":[6,0],"766":[7,0],"767":[13,0],"768":[9,0],"769":[11,0],"770":[14,0],"771":[12,0],"772":[7,0],"773":[14,0],"774":[8,0],"775":[14,0],"776":[8,0],"777":[9,0],"778":[15,0],"779":[7,0],"780":[12,0],"781":[7,0],"782":[9,1],"783":[5,1],"784":[11,1],"785":[9,0],"786":[10,0],"787":[13,0],"788":[12,0],"789":[4,0],"790":[13,0],"791":[7,0],"792":[9,0],"793":[11,0],"794":[13,0],"795":[13,0],"796":[15,0],"797":[9,0],"798":[7,0],"799":[4,0],"800":[2,0],"801":[1,0],"802":[3,0],"803":[1,0],"804":[9,1],"805":[1,0],"806":[3,1],"807":[3,0],"808":[5,1],"810":[6,0],"811":[3,1],"812":[8,1],"813":[10,1],"814":[7,1],"815":[13,0],"816":[13,0],"817":[15,0],"818":[14,0],"819":[9,0],"820":[9,0],"821":[10,0],"822":[14,0],"823":[9,0],"824":[4,0],"825":[12,0],"826":[13,0],"827":[9,0],"828":[12,0],"829":[7,0],"830":[10,0],"831":[2,0],"833":[4,0],"834":[18,0],"836":[17,0],"837":[10,0],"839":[5,0],"840":[1,0],"843":[9,0],"844":[1,0],"845":[1,0],"862":[5,0],"863":[3,0],"864":[13,0],"865":[14,0],"866":[14,0],"867":[14,0],"868":[14,0],"869":[14,1],"870":[16,0],"871":[14,0],"872":[14,0],"873":[14,0],"874":[6,0],"875":[3,1],"876":[2,1],"877":[2,0],"878":[2,0],"879":[2,0],"880":[1,0],"881":[1,0],"882":[1,0],"883":[1,0],"884":[1,0],"885":[1,0],"886":[1,0],"887":[1,0],"888":[1,0],"889":[1,0],"890":[1,0],"891":[1,0],"892":[1,0],"893":[1,0],"894":[1,0],"895":[1,0],"896":[1,0],"897":[1,0],"898":[1,0],"899":[1,0],"900":[1,0],"901":[1,0],"902":[1,0],"903":[1,0],"904":[1,0],"905":[1,0],"906":[1,0],"907":[1,0],"908":[1,0],"909":[1,0],"910":[1,0],"911":[1,0],"912":[1,0],"913":[1,0],"914":[1,0],"915":[1,0],"916":[1,0],"917":[1,0]};
+const GRADES = [
+  {g:1,n:303,d:70,pd:.275},{g:2,n:289,d:62,pd:.196},{g:3,n:460,d:84,pd:.124},{g:4,n:428,d:69,pd:.091},
+  {g:5,n:473,d:64,pd:.067},{g:6,n:413,d:42,pd:.040},{g:7,n:430,d:26,pd:.028},{g:8,n:387,d:12,pd:.015},
+  {g:9,n:308,d:7,pd:.006},{g:10,n:207,d:3,pd:.001}];
+
+const vn = (x, d=2) => x.toLocaleString('vi-VN',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = (x, d=1) => vn(100*x, d) + '%';
+const sci = p => { if (p >= 1e-3) return vn(p,3); const [m,e] = p.toExponential(1).split('e'); return m.replace('.',',') + '×10<sup>' + (+e) + '</sup>'; };
+const el = id => document.getElementById(id);
+
+// ---------- dữ liệu điểm ----------
+const scores = Object.keys(RAW).map(Number).sort((a,b)=>a-b);
+const nGood = scores.reduce((s,k)=>s+RAW[k][0],0), nBad = scores.reduce((s,k)=>s+RAW[k][1],0);
+const goodList = [], badList = [];
+scores.forEach(k => { for (let i=0;i<RAW[k][0];i++) goodList.push(k); for (let i=0;i<RAW[k][1];i++) badList.push(k); });
+function rates(c){ let g=0,b=0; scores.forEach(k=>{ if(k<=c){g+=RAW[k][0];b+=RAW[k][1];} }); return {fpr:g/nGood,tpr:b/nBad,g,b}; }
+const rocPts = [{fpr:0,tpr:0}]; let cg=0, cb=0;
+scores.forEach(k => { cg+=RAW[k][0]; cb+=RAW[k][1]; rocPts.push({fpr:cg/nGood,tpr:cb/nBad}); });
+let AUC = 0; for (let i=1;i<rocPts.length;i++) AUC += (rocPts[i].fpr-rocPts[i-1].fpr)*(rocPts[i].tpr+rocPts[i-1].tpr)/2;
+el('aucv').textContent = vn(AUC,3);
+
+// ---------- công cụ vẽ SVG ----------
+function frame(W,H,m){ return {W,H,m,iw:W-m.l-m.r,ih:H-m.t-m.b}; }
+function lin(d0,d1,r0,r1){ return v => r0 + (v-d0)/(d1-d0)*(r1-r0); }
+
+// Histogram + ROC
+function drawCut(c){
+  const r = rates(c);
+  el('cutv').textContent = c;
+  // histogram
+  const F = frame(440,250,{l:40,r:10,t:10,b:36});
+  const bins = []; for (let s=420;s<920;s+=20) bins.push({lo:s,g:0,b:0});
+  scores.forEach(k=>{ const i=Math.min(bins.length-1,Math.floor((k-420)/20)); bins[i].g+=RAW[k][0]/nGood; bins[i].b+=RAW[k][1]/nBad; });
+  const ymax = .16, x = lin(420,920,F.m.l,F.m.l+F.iw), y = lin(0,ymax,F.m.t+F.ih,F.m.t);
+  let s = `<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="Phân phối điểm good và bad">`;
+  [0,.05,.10,.15].forEach(t=>{ s+=`<line class="grid" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(t)}" y2="${y(t)}"/><text x="${F.m.l-6}" y="${y(t)+4}" text-anchor="end">${t*100}%</text>`; });
+  s += `<rect x="${F.m.l}" y="${F.m.t}" width="${Math.max(0,x(c)-F.m.l)}" height="${F.ih}" class="f-acc" opacity=".07"/>`;
+  bins.forEach(bn=>{ const bw=(x(bn.lo+20)-x(bn.lo))/2-1; const on = bn.lo+20<=c+0.5 ? 1 : .35;
+    s+=`<rect x="${x(bn.lo)+.5}" y="${y(bn.g)}" width="${bw}" height="${y(0)-y(bn.g)}" class="f-good" opacity="${on}"/>`;
+    s+=`<rect x="${x(bn.lo)+bw+1}" y="${y(bn.b)}" width="${bw}" height="${y(0)-y(bn.b)}" class="f-bad" opacity="${on}"/>`; });
+  [450,550,650,750,850].forEach(t=>{ s+=`<text x="${x(t)}" y="${F.m.t+F.ih+16}" text-anchor="middle">${t}</text>`; });
+  s += `<line x1="${x(c)}" x2="${x(c)}" y1="${F.m.t}" y2="${F.m.t+F.ih}" class="s-ink" stroke-width="2"/>`;
+  s += `<text x="${F.m.l+F.iw/2}" y="${F.H-2}" text-anchor="middle">Điểm (thấp = rủi ro cao)</text></svg>`;
+  el('histo').innerHTML = s;
+  // ROC
+  const G = frame(310,280,{l:56,r:14,t:10,b:40}), X = lin(0,1,G.m.l,G.m.l+G.iw), Y = lin(0,1,G.m.t+G.ih,G.m.t);
+  const path = rocPts.map((p,i)=>(i?'L':'M')+X(p.fpr).toFixed(1)+','+Y(p.tpr).toFixed(1)).join('');
+  let t = `<svg viewBox="0 0 ${G.W} ${G.H}" role="img" aria-label="Đường ROC">`;
+  [0,.5,1].forEach(v=>{ t+=`<text x="${X(v)}" y="${G.m.t+G.ih+16}" text-anchor="middle">${v*100}%</text><text x="${G.m.l-6}" y="${Y(v)+4}" text-anchor="end">${v*100}%</text>`; });
+  t += `<rect x="${G.m.l}" y="${G.m.t}" width="${G.iw}" height="${G.ih}" fill="none" class="s-muted" stroke-opacity=".4"/>`;
+  t += `<path d="${path}L${X(1)},${Y(0)}Z" class="f-acc" opacity=".14"/>`;
+  t += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(1)}" y2="${Y(1)}" class="s-muted" stroke-dasharray="4 4"/>`;
+  t += `<path d="${path}" fill="none" class="s-acc" stroke-width="2.5"/>`;
+  t += `<circle cx="${X(r.fpr)}" cy="${Y(r.tpr)}" r="6" class="f-bad" stroke="var(--surface)" stroke-width="2"/>`;
+  t += `<text x="${X(.55)}" y="${Y(.3)}" class="lbl">AUC = ${vn(AUC,3)}</text>`;
+  t += `<text x="${G.m.l+G.iw/2}" y="${G.H-4}" text-anchor="middle">FPR: % good bị từ chối nhầm</text>`;
+  t += `<text transform="translate(11 ${G.m.t+G.ih/2}) rotate(-90)" text-anchor="middle">TPR: % bad bị bắt</text></svg>`;
+  el('rocplot').innerHTML = t;
+  el('cutread').innerHTML = `<span>Từ chối <b>${vn(r.g+r.b,0)}</b> khách</span><span style="color:var(--bad)">TPR = <b>${pct(r.tpr)}</b> (${r.b}/${nBad} bad)</span><span style="color:var(--good)">FPR = <b>${pct(r.fpr)}</b> (${vn(r.g,0)}/${vn(nGood,0)} good)</span>`;
+}
+el('cut').addEventListener('input', e => drawCut(+e.target.value));
+drawCut(600);
+
+// Rút cặp
+let pRight=0, pTotal=0;
+function drawPairs(k){
+  const tally = el('tally'); let last='';
+  for (let i=0;i<k;i++){
+    const b = badList[Math.floor(Math.random()*badList.length)], g = goodList[Math.floor(Math.random()*goodList.length)];
+    const v = b<g ? 1 : b===g ? .5 : 0; pRight+=v; pTotal++;
+    last = `bad ${b} điểm, good ${g} điểm → ${v===1?'xếp đúng':v===.5?'hòa':'xếp sai'}`;
+    if (tally.childElementCount < 300){ const sp=document.createElement('span'); sp.style.background = v>=.5 ? 'var(--accent)' : 'var(--bad)'; tally.appendChild(sp); }
+  }
+  el('pairread').innerHTML = `<span>Cặp gần nhất: ${last}</span><span>Đã rút <b>${vn(pTotal,0)}</b> cặp</span><span>Tỷ lệ xếp đúng = <b>${vn(pRight/pTotal,3)}</b></span><span>AUC thật = <b>${vn(AUC,3)}</b></span>`;
+}
+el('pair1').onclick = () => drawPairs(1);
+el('pair100').onclick = () => drawPairs(100);
+el('pair5000').onclick = () => drawPairs(5000);
+el('pairReset').onclick = () => { pRight=pTotal=0; el('tally').innerHTML=''; el('pairread').innerHTML='<span>Bấm nút để bắt đầu.</span>'; };
+
+// CAP + thang AUC
+(function(){
+  const dr = nBad/(nBad+nGood), N = nBad+nGood;
+  const pts=[{x:0,y:0}]; let ca=0, cb2=0; scores.forEach(k=>{ ca+=RAW[k][0]+RAW[k][1]; cb2+=RAW[k][1]; pts.push({x:ca/N,y:cb2/nBad}); });
+  const G = frame(310,280,{l:56,r:14,t:10,b:40}), X = lin(0,1,G.m.l,G.m.l+G.iw), Y = lin(0,1,G.m.t+G.ih,G.m.t);
+  const path = pts.map((p,i)=>(i?'L':'M')+X(p.x).toFixed(1)+','+Y(p.y).toFixed(1)).join('');
+  let s = `<svg viewBox="0 0 ${G.W} ${G.H}" role="img" aria-label="Đường CAP">`;
+  [0,.5,1].forEach(v=>{ s+=`<text x="${X(v)}" y="${G.m.t+G.ih+16}" text-anchor="middle">${v*100}%</text><text x="${G.m.l-6}" y="${Y(v)+4}" text-anchor="end">${v*100}%</text>`; });
+  s += `<rect x="${G.m.l}" y="${G.m.t}" width="${G.iw}" height="${G.ih}" fill="none" class="s-muted" stroke-opacity=".4"/>`;
+  s += `<path d="M${X(0)},${Y(0)}L${X(dr)},${Y(1)}L${X(1)},${Y(1)}${path.replace('M','L').split('L').slice(1).reverse().map(p=>'L'+p).join('')}Z" class="f-good" opacity=".14"/>`;
+  s += `<path d="${path}L${X(0)},${Y(0)}Z" class="f-acc" opacity=".16"/>`;
+  s += `<path d="${path}" fill="none" class="s-acc" stroke-width="2.5"/>`;
+  s += `<line x1="${X(0)}" y1="${Y(0)}" x2="${X(1)}" y2="${Y(1)}" class="s-muted" stroke-dasharray="4 4"/>`;
+  s += `<polyline points="${X(0)},${Y(0)} ${X(dr)},${Y(1)} ${X(1)},${Y(1)}" fill="none" class="s-good" stroke-width="1.8"/>`;
+  s += `<text x="${X(.36)}" y="${Y(.6)}" class="lbl">A</text><text x="${X(.12)}" y="${Y(.86)}" class="lbl">B</text>`;
+  s += `<text x="${G.m.l+G.iw/2}" y="${G.H-4}" text-anchor="middle">% khách đã xét (rủi ro nhất trước)</text>`;
+  s += `<text transform="translate(11 ${G.m.t+G.ih/2}) rotate(-90)" text-anchor="middle">% bad bị bắt</text></svg>`;
+  el('capplot').innerHTML = s;
+  // thang AUC
+  const W=300,H=280, x=lin(.5,1,24,W-24), y0=130;
+  const bands=[[.5,.6,'Rất yếu','f-bad',.55],[.6,.7,'Yếu – tạm','f-warn',.55],[.7,.8,'Tốt','f-good',.45],[.8,.9,'Rất tốt','f-good',.7],[.9,1,'Xuất sắc','f-acc',.5]];
+  let t=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Thang đánh giá AUC">`;
+  t+=`<text x="${W/2}" y="40" text-anchor="middle" class="lbl">Thang đánh giá AUC (tham khảo)</text>`;
+  bands.forEach(([a,b,l,c,o],i)=>{ t+=`<rect x="${x(a)}" y="${y0-16}" width="${x(b)-x(a)-2}" height="32" class="${c}" opacity="${o}"/><text x="${(x(a)+x(b))/2}" y="${i%2? y0+40 : y0+56}" text-anchor="middle">${l}</text>`; });
+  [.5,.6,.7,.8,.9,1].forEach(v=>t+=`<text x="${x(v)}" y="${y0-24}" text-anchor="middle">${vn(v,1)}</text>`);
+  t+=`<line x1="${x(AUC)}" x2="${x(AUC)}" y1="${y0-18}" y2="${y0+22}" class="s-ink" stroke-width="2.5"/>`;
+  t+=`<text x="${x(AUC)}" y="${y0+90}" text-anchor="middle" class="lbl">Bài này: AUC ${vn(AUC,3)} · AR ${vn(2*AUC-1,3)}</text>`;
+  t+=`<text x="${W/2}" y="${y0+112}" text-anchor="middle">Ngưỡng khác nhau theo ngân hàng và loại sản phẩm</text></svg>`;
+  el('scale').innerHTML = t;
+})();
+
+// ---------- Binomial ----------
+function binomPmf(n,p){ const out=new Array(n+1); out[0]=Math.pow(1-p,n); for(let k=1;k<=n;k++) out[k]=out[k-1]*(n-k+1)/k*p/(1-p); return out; }
+const gsel = el('gsel');
+GRADES.forEach(g=>{ const o=document.createElement('option'); o.value=g.g; o.textContent=`Hạng ${g.g}: n = ${g.n}, PD = ${pct(g.pd)}`; gsel.appendChild(o); });
+gsel.value = 5;
+function drawBin(){
+  const g = GRADES[gsel.value-1], pmf = binomPmf(g.n,g.pd);
+  let cum=0, k95=0; for(let k=0;k<=g.n;k++){ cum+=pmf[k]; if(cum>=.95){k95=k;break;} }
+  let upper=0; for(let k=g.d;k<=g.n;k++) upper+=pmf[k];
+  let lower=0; for(let k=0;k<=g.d;k++) lower+=pmf[k];
+  const E = g.n*g.pd, sd=Math.sqrt(E*(1-g.pd));
+  const kmax = Math.max(g.d+3, Math.ceil(E+4.5*sd)+1, 6), kmin = Math.max(0, Math.min(g.d-3, Math.floor(E-4.5*sd)));
+  const F = frame(760,250,{l:46,r:12,t:22,b:36});
+  const pmax = Math.max(...pmf.slice(kmin,kmax+1));
+  const x = lin(kmin-.5,kmax+.5,F.m.l,F.m.l+F.iw), y = lin(0,pmax*1.08,F.m.t+F.ih,F.m.t), bw = Math.max(1,(x(1)-x(0))*.8);
+  let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="Phân phối nhị thức của hạng ${g.g}">`;
+  for(let k=kmin;k<=kmax;k++){ const tail = k>=g.d && g.d>E; const tailL = k<=g.d && g.d<E;
+    s+=`<rect x="${x(k)-bw/2}" y="${y(pmf[k])}" width="${bw}" height="${y(0)-y(pmf[k])}" class="${tail||tailL?'f-bad':'f-muted'}" opacity="${tail||tailL?.85:.45}"/>`; }
+  const step = Math.max(1, Math.ceil((kmax-kmin)/12));
+  for(let k=kmin;k<=kmax;k+=step) s+=`<text x="${x(k)}" y="${F.m.t+F.ih+15}" text-anchor="middle">${k}</text>`;
+  s+=`<line x1="${x(k95+.5)}" x2="${x(k95+.5)}" y1="${F.m.t-8}" y2="${F.m.t+F.ih}" class="s-warn" stroke-width="2" stroke-dasharray="5 3"/>`;
+  s+=`<text x="${x(k95+.5)+4}" y="${F.m.t-10}" class="lbl" style="fill:var(--warn)">ngưỡng 95%: ${k95}</text>`;
+  s+=`<line x1="${x(g.d)}" x2="${x(g.d)}" y1="${F.m.t+6}" y2="${F.m.t+F.ih}" class="s-bad" stroke-width="2.5"/>`;
+  const anchor = x(g.d) > F.m.l+F.iw-120 ? 'end' : 'start', dx = anchor==='end'?-5:5;
+  s+=`<text x="${x(g.d)+dx}" y="${F.m.t+22}" class="lbl" text-anchor="${anchor}" style="fill:var(--bad)">thực tế: ${g.d}</text>`;
+  s+=`<text x="${F.m.l+F.iw/2}" y="${F.H-2}" text-anchor="middle">Số khách bad trong hạng (nếu PD đúng, trung bình = ${vn(E,1)})</text></svg>`;
+  el('binplot').innerHTML = s;
+  const rej = upper<.05;
+  el('binread').innerHTML = `<span>Kỳ vọng E = n × PD = <b>${vn(E,1)}</b></span><span>Thực tế = <b>${g.d}</b> (ODR ${pct(g.d/g.n)})</span><span>p 1 phía P(X ≥ ${g.d}) = <b>${sci(upper)}</b></span><span>p 2 phía = <b>${sci(Math.min(1,2*Math.min(upper,lower)))}</b></span><span style="color:${rej?'var(--bad)':'var(--good)'}"><b>${rej?'Bác bỏ: PD quá thấp':(lower<.025?'Không bác bỏ 1 phía, nhưng PD hơi cao':'Không bác bỏ')}</b></span>`;
+}
+gsel.addEventListener('change', drawBin); drawBin();
+
+// ---------- Hosmer-Lemeshow ----------
+function hlOf(mult){ return GRADES.reduce((s,g)=>{ const p=Math.min(.99,g.pd*mult), e=g.n*p; return s+(g.d-e)**2/(g.n*p*(1-p)); },0); }
+function chi2sf10(x){ let t=1, s=1; for(let i=1;i<5;i++){ t*=(x/2)/i; s+=t; } return Math.exp(-x/2)*s; }
+const chi2pdf10 = x => x<=0?0:Math.pow(x,4)*Math.exp(-x/2)/768;
+
+(function(){ // O vs E
+  const F=frame(760,230,{l:40,r:10,t:16,b:34}), step=F.iw/10, y=lin(0,90,F.m.t+F.ih,F.m.t);
+  let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="Số bad thực tế và kỳ vọng theo hạng">`;
+  [0,30,60,90].forEach(t=>s+=`<line class="grid" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(t)}" y2="${y(t)}"/><text x="${F.m.l-6}" y="${y(t)+4}" text-anchor="end">${t}</text>`);
+  GRADES.forEach((g,i)=>{ const cx=F.m.l+step*(i+.5), bw=step*.3, E=g.n*g.pd;
+    s+=`<rect x="${cx-bw-1}" y="${y(g.d)}" width="${bw}" height="${y(0)-y(g.d)}" class="f-bad"/>`;
+    s+=`<rect x="${cx+1}" y="${y(E)}" width="${bw}" height="${y(0)-y(E)}" class="f-muted" opacity=".6"/>`;
+    s+=`<text x="${cx-bw/2-1}" y="${y(g.d)-4}" text-anchor="middle" class="lbl">${g.d}</text>`;
+    s+=`<text x="${cx+bw/2+1}" y="${y(E)-4}" text-anchor="middle">${vn(E,1)}</text>`;
+    s+=`<text x="${cx}" y="${F.m.t+F.ih+16}" text-anchor="middle">Hạng ${g.g}</text>`; });
+  s+=`</svg>`; el('oeplot').innerHTML=s;
+})();
+(function(){ // z²
+  const F=frame(760,230,{l:40,r:10,t:16,b:34}), step=F.iw/10, y=lin(0,45,F.m.t+F.ih,F.m.t);
+  let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="Đóng góp z bình phương theo hạng">`;
+  [0,15,30,45].forEach(t=>s+=`<line class="grid" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(t)}" y2="${y(t)}"/><text x="${F.m.l-6}" y="${y(t)+4}" text-anchor="end">${t}</text>`);
+  s+=`<line x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(1)}" y2="${y(1)}" class="s-good" stroke-dasharray="4 3"/>`;
+  GRADES.forEach((g,i)=>{ const cx=F.m.l+step*(i+.5), bw=step*.5, E=g.n*g.pd, z2=(g.d-E)**2/(g.n*g.pd*(1-g.pd));
+    s+=`<rect x="${cx-bw/2}" y="${y(z2)}" width="${bw}" height="${y(0)-y(z2)}" class="f-acc" opacity=".8"/>`;
+    s+=`<text x="${cx}" y="${y(z2)-4}" text-anchor="middle" class="lbl">${vn(z2,1)}</text>`;
+    s+=`<text x="${cx}" y="${F.m.t+F.ih+16}" text-anchor="middle">Hạng ${g.g}</text>`; });
+  s+=`</svg>`; el('z2plot').innerHTML=s;
+})();
+
+const HL = hlOf(1);
+function drawSim(sims){
+  const F=frame(760,260,{l:44,r:16,t:20,b:36}), xmax=42, x=lin(0,xmax,F.m.l,F.m.l+F.iw);
+  const bins=new Array(21).fill(0); (sims||[]).forEach(v=>{ const i=Math.min(20,Math.floor(v/2)); bins[i]++; });
+  const dens = sims ? bins.map(c=>c/sims.length/2) : bins;
+  const ymax = .11, y=lin(0,ymax,F.m.t+F.ih,F.m.t);
+  let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="Phân phối HL khi PD đúng">`;
+  [0,10,20,30,40].forEach(t=>s+=`<text x="${x(t)}" y="${F.m.t+F.ih+16}" text-anchor="middle">${t}</text>`);
+  s+=`<line class="axis" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(0)}" y2="${y(0)}"/>`;
+  dens.forEach((d,i)=>{ if(i<20 && d>0) s+=`<rect x="${x(i*2)+1}" y="${y(d)}" width="${x(2)-x(0)-2}" height="${y(0)-y(d)}" class="f-acc" opacity=".35"/>`; });
+  let path=''; for(let v=0;v<=xmax;v+=.25) path+=(v?'L':'M')+x(v).toFixed(1)+','+y(chi2pdf10(v)).toFixed(1);
+  s+=`<path d="${path}" fill="none" class="s-acc" stroke-width="2.2"/>`;
+  s+=`<line x1="${x(18.31)}" x2="${x(18.31)}" y1="${F.m.t}" y2="${y(0)}" class="s-warn" stroke-width="2" stroke-dasharray="5 3"/>`;
+  s+=`<text x="${x(18.31)+5}" y="${F.m.t+10}" class="lbl" style="fill:var(--warn)">ngưỡng 95% = 18,3</text>`;
+  s+=`<text x="${F.m.l+F.iw}" y="${F.m.t+40}" text-anchor="end" class="lbl" style="fill:var(--bad)">HL thực tế = ${vn(HL,1)} →</text>`;
+  s+=`<text x="${F.m.l+F.iw}" y="${F.m.t+56}" text-anchor="end" style="fill:var(--bad)">(xa ngoài khung, gấp ~10 lần ngưỡng)</text>`;
+  s+=`<text x="${F.m.l+F.iw/2}" y="${F.H-2}" text-anchor="middle">Giá trị HL</text></svg>`;
+  el('simplot').innerHTML=s;
+  if (sims){ const over=sims.filter(v=>v>18.31).length, mean=sims.reduce((a,b)=>a+b,0)/sims.length, mx=Math.max(...sims);
+    el('simread').innerHTML=`<span>HL trung bình = <b>${vn(mean,1)}</b> (lý thuyết: 10)</span><span>Vượt ngưỡng 18,3: <b>${over}</b>/1.000 lần (~5%)</span><span>HL lớn nhất trong 1.000 lần: <b>${vn(mx,1)}</b></span><span style="color:var(--bad)">HL thực tế: <b>${vn(HL,1)}</b></span>`; }
+  else el('simread').innerHTML = `<span>Đường cong là phân phối χ²(10) lý thuyết. Bấm nút để thêm kết quả giả lập.</span>`;
+}
+function simulate(){ const out=[]; for(let s=0;s<1000;s++){ let h=0; GRADES.forEach(g=>{ let d=0; for(let i=0;i<g.n;i++) if(Math.random()<g.pd) d++; const e=g.n*g.pd; h+=(d-e)**2/(e*(1-g.pd)); }); out.push(h);} return out; }
+el('sim').onclick = () => drawSim(simulate());
+drawSim(simulate());
+
+// hệ số nhân PD
+const multCurve=[]; for(let m=.8;m<=2.2001;m+=.02) multCurve.push({m,h:hlOf(m)});
+const best = multCurve.reduce((a,b)=>b.h<a.h?b:a);
+function drawMult(m){
+  el('multv').textContent = vn(m,2);
+  const F=frame(760,240,{l:46,r:16,t:16,b:36}), ymax=Math.ceil(Math.max(...multCurve.map(p=>p.h))/50)*50, x=lin(.8,2.2,F.m.l,F.m.l+F.iw), y=lin(0,ymax,F.m.t+F.ih,F.m.t);
+  let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="HL theo hệ số nhân PD">`;
+  Array.from({length:ymax/50+1},(_,i)=>i*50).forEach(t=>s+=`<line class="grid" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(t)}" y2="${y(t)}"/><text x="${F.m.l-6}" y="${y(t)+4}" text-anchor="end">${t}</text>`);
+  [.8,1,1.2,1.4,1.6,1.8,2,2.2].forEach(t=>s+=`<text x="${x(t)}" y="${F.m.t+F.ih+16}" text-anchor="middle">×${vn(t,1)}</text>`);
+  s+=`<rect x="${F.m.l}" y="${y(18.31)}" width="${F.iw}" height="${y(0)-y(18.31)}" class="f-good" opacity=".14"/>`;
+  s+=`<text x="${F.m.l+6}" y="${y(18.31)+13}" style="fill:var(--good)">vùng "PD khớp thực tế" (HL &lt; 18,3)</text>`;
+  const path = multCurve.map((p,i)=>(i?'L':'M')+x(p.m).toFixed(1)+','+y(p.h).toFixed(1)).join('');
+  s+=`<path d="${path}" fill="none" class="s-acc" stroke-width="2.4"/>`;
+  const h=hlOf(m);
+  s+=`<circle cx="${x(m)}" cy="${y(h)}" r="6" class="f-bad" stroke="var(--surface)" stroke-width="2"/>`;
+  s+=`<text x="${F.m.l+F.iw/2}" y="${F.H-2}" text-anchor="middle">Hệ số nhân PD</text></svg>`;
+  el('multplot').innerHTML=s;
+  const avg = GRADES.reduce((a,g)=>a+g.n*Math.min(.99,g.pd*m),0)/3698;
+  el('multread').innerHTML=`<span>PD bình quân mới = <b>${pct(avg,2)}</b> (thực tế 11,87%)</span><span>HL = <b>${vn(h,1)}</b></span><span>p-value = <b>${sci(chi2sf10(h))}</b></span><span>HL nhỏ nhất đạt được ≈ <b>${vn(best.h,1)}</b> tại ×${vn(best.m,2)}</span>`;
+}
+el('mult').addEventListener('input', e=>drawMult(+e.target.value));
+drawMult(1);
+
+// ================= BÀI II =================
+const B2 = {"perf": [{"Mô hình": "Logistic (scorecard)", "Tập": "Train", "AUC": 0.7339, "Gini": 0.4677, "KS": 0.3444}, {"Mô hình": "Logistic (scorecard)", "Tập": "Validation", "AUC": 0.7434, "Gini": 0.4867, "KS": 0.3538}, {"Mô hình": "Logistic (scorecard)", "Tập": "Test OOT", "AUC": 0.7289, "Gini": 0.4578, "KS": 0.3473}, {"Mô hình": "Gradient Boosting", "Tập": "Train", "AUC": 0.8305, "Gini": 0.661, "KS": 0.4989}, {"Mô hình": "Gradient Boosting", "Tập": "Validation", "AUC": 0.7851, "Gini": 0.5702, "KS": 0.4288}, {"Mô hình": "Gradient Boosting", "Tập": "Test OOT", "AUC": 0.7739, "Gini": 0.5478, "KS": 0.4027}], "monthly": [{"m": "2018-01", "n": 4472, "br": 0.1485}, {"m": "2018-02", "n": 5564, "br": 0.1485}, {"m": "2018-03", "n": 6144, "br": 0.1322}, {"m": "2018-04", "n": 7006, "br": 0.1068}, {"m": "2018-05", "n": 8589, "br": 0.122}, {"m": "2018-06", "n": 6322, "br": 0.1386}, {"m": "2018-07", "n": 2925, "br": 0.1183}], "loan": [{"bin": "(-inf, 0.0]", "n": 9594, "br": 0.0862}, {"bin": "(0.0, 1.0]", "n": 8031, "br": 0.1093}, {"bin": "(1.0, 2.0]", "n": 2889, "br": 0.1412}, {"bin": "(2.0, inf]", "n": 3317, "br": 0.2894}], "apps": [{"bin": "(-inf, 19.0]", "n": 4123, "br": 0.1836}, {"bin": "(19.0, 27.0]", "n": 3877, "br": 0.1514}, {"bin": "(27.0, 35.0]", "n": 4353, "br": 0.122}, {"bin": "(35.0, 44.0]", "n": 3911, "br": 0.1112}, {"bin": "(44.0, 57.0]", "n": 3605, "br": 0.106}, {"bin": "(57.0, inf]", "n": 3962, "br": 0.0962}], "edu": [{"bin": "(-inf, 2.0]", "n": 14758, "br": 0.1474}, {"bin": "(2.0, 3.0]", "n": 3369, "br": 0.1128}, {"bin": "(3.0, inf]", "n": 5704, "br": 0.0908}], "dec": {"Logistic (scorecard)": [{"br": 0.3589, "pd": 0.3728}, {"br": 0.2454, "pd": 0.221}, {"br": 0.1656, "pd": 0.1658}, {"br": 0.1449, "pd": 0.1317}, {"br": 0.1103, "pd": 0.1069}, {"br": 0.0866, "pd": 0.087}, {"br": 0.0822, "pd": 0.07}, {"br": 0.066, "pd": 0.055}, {"br": 0.0357, "pd": 0.0411}, {"br": 0.0259, "pd": 0.024}], "Gradient Boosting": [{"br": 0.4314, "pd": 0.4267}, {"br": 0.2486, "pd": 0.2411}, {"br": 0.1688, "pd": 0.169}, {"br": 0.1384, "pd": 0.1254}, {"br": 0.1124, "pd": 0.0959}, {"br": 0.0725, "pd": 0.0745}, {"br": 0.0616, "pd": 0.0573}, {"br": 0.039, "pd": 0.0433}, {"br": 0.0314, "pd": 0.0303}, {"br": 0.0173, "pd": 0.0166}]}, "hl": {"Logistic (scorecard)": {"HL": 10.57320064014514, "df": 10, "p": 0.3917208311286201}, "Gradient Boosting": {"HL": 5.544522488659459, "df": 10, "p": 0.8519701944242406}}, "psi": {"Logistic (scorecard)": 0.004587993131871335, "Gradient Boosting": 0.002675613329616807}, "iv": {"n_loan_apps": 0.2827, "n_bank_apps": 0.0788, "n_apps": 0.0692, "education": 0.0507, "call_pct_in_day": 0.0505, "call_pct_other": 0.04, "call_total": 0.0398, "fb_age_gap": 0.0391, "employment_duration": 0.0378, "employment_type": 0.0288, "call_dur_total_log": 0.0257, "fb_days_since_update": 0.022, "call_pct_out_night": 0.0218, "num_friends": 0.0168}};
+(function(){
+  const tl = el('b2months');
+  tl.innerHTML = B2.monthly.map(m => { const te = m.m >= '2018-06';
+    return `<div class="${te?'te':'tr'}"><b>T${+m.m.slice(5)}</b><span class="num">${vn(m.n,0)}</span><small>bad ${pct(m.br)}</small><small>${te?'Test set':'Train / valid'}</small></div>`; }).join('');
+
+  function bars(id, data, labels, ymax){
+    const F=frame(420,230,{l:40,r:10,t:16,b:34}), step=F.iw/data.length, y=lin(0,ymax,F.m.t+F.ih,F.m.t);
+    let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img">`;
+    for(let t=0;t<=ymax+1e-9;t+=0.1) s+=`<line class="grid" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(t)}" y2="${y(t)}"/><text x="${F.m.l-6}" y="${y(t)+4}" text-anchor="end">${Math.round(t*100)}%</text>`;
+    data.forEach((d,i)=>{ const cx=F.m.l+step*(i+.5), bw=step*.6;
+      s+=`<rect x="${cx-bw/2}" y="${y(d.br)}" width="${bw}" height="${y(0)-y(d.br)}" class="${d.br>.2?'f-bad':'f-acc'}" opacity=".85"/>`;
+      s+=`<text x="${cx}" y="${y(d.br)-5}" text-anchor="middle" class="lbl">${pct(d.br)}</text>`;
+      s+=`<text x="${cx}" y="${F.m.t+F.ih+16}" text-anchor="middle">${labels[i]}</text>`; });
+    s+=`<line x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(.129)}" y2="${y(.129)}" class="s-muted" stroke-dasharray="5 4"/>`;
+    el(id).innerHTML = s+'</svg>';
+  }
+  bars('b2loan', B2.loan, ['0','1','2','3 trở lên'], .3);
+  bars('b2apps', B2.apps, ['≤19','20–27','28–35','36–44','45–57','58+'], .2);
+
+  // AUC theo tập
+  (function(){
+    const F=frame(760,250,{l:44,r:10,t:18,b:36}), sets=['Train','Validation','Test OOT'], names={'Train':'Training set','Validation':'Validation set','Test OOT':'Test set (T6–7)'};
+    const y=lin(.5,.85,F.m.t+F.ih,F.m.t), step=F.iw/3;
+    let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="AUC theo tập dữ liệu">`;
+    [.5,.6,.7,.8].forEach(t=>s+=`<line class="grid" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(t)}" y2="${y(t)}"/><text x="${F.m.l-6}" y="${y(t)+4}" text-anchor="end">${vn(t,1)}</text>`);
+    sets.forEach((st,i)=>{ const cx=F.m.l+step*(i+.5), bw=step*.28;
+      [['Logistic (scorecard)','f-acc',-1],['Gradient Boosting','f-warn',1]].forEach(([m,c,side])=>{
+        const v=B2.perf.find(p=>p['Mô hình']===m&&p['Tập']===st).AUC, x0=side<0?cx-bw-3:cx+3;
+        s+=`<rect x="${x0}" y="${y(v)}" width="${bw}" height="${y(.5)-y(v)}" class="${c}" opacity=".85"/>`;
+        s+=`<text x="${x0+bw/2}" y="${y(v)-5}" text-anchor="middle" class="lbl">${vn(v,3)}</text>`; });
+      s+=`<text x="${cx}" y="${F.m.t+F.ih+18}" text-anchor="middle">${names[st]}</text>`; });
+    s+=`<text x="${F.m.l}" y="10">AUC (trục bắt đầu từ 0,5 = đoán bừa)</text></svg>`;
+    el('b2perf').innerHTML=s;
+  })();
+
+  // nhóm 10% GB
+  (function(){
+    const d=B2.dec['Gradient Boosting'], F=frame(760,240,{l:44,r:10,t:16,b:36}), step=F.iw/10, y=lin(0,.45,F.m.t+F.ih,F.m.t);
+    let s=`<svg viewBox="0 0 ${F.W} ${F.H}" role="img" aria-label="Tỷ lệ bad thực tế và PD dự báo theo nhóm">`;
+    [0,.1,.2,.3,.4].forEach(t=>s+=`<line class="grid" x1="${F.m.l}" x2="${F.m.l+F.iw}" y1="${y(t)}" y2="${y(t)}"/><text x="${F.m.l-6}" y="${y(t)+4}" text-anchor="end">${t*100}%</text>`);
+    const pts=[];
+    d.forEach((v,i)=>{ const cx=F.m.l+step*(i+.5), bw=step*.55;
+      s+=`<rect x="${cx-bw/2}" y="${y(v.br)}" width="${bw}" height="${y(0)-y(v.br)}" class="f-acc" opacity=".8"/>`;
+      s+=`<text x="${cx}" y="${F.m.t+F.ih+16}" text-anchor="middle">Nhóm ${i+1}</text>`; pts.push([cx,y(v.pd)]); });
+    s+=`<polyline fill="none" class="s-warn" stroke-width="2.5" points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+    pts.forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" class="f-warn"/>`);
+    el('b2dec').innerHTML=s+'</svg>';
+  })();
+})();
+</script>

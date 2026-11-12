@@ -1,0 +1,75 @@
+{
+  "performance": [
+    {
+      "Mô hình": "Logistic (scorecard)",
+      "Tập": "Train",
+      "AUC": 0.7338830422653417,
+      "Gini": 0.46776608453068347,
+      "KS": 0.34434295865199027
+    },
+    {
+      "Mô hình": "Logistic (scorecard)",
+      "Tập": "Validation",
+      "AUC": 0.7433607704482884,
+      "Gini": 0.4867215408965768,
+      "KS": 0.3537980604838567
+    },
+    {
+      "Mô hình": "Logistic (scorecard)",
+      "Tập": "Test OOT",
+      "AUC": 0.7288591298672826,
+      "Gini": 0.45771825973456526,
+      "KS": 0.34718815485568316
+    },
+    {
+      "Mô hình": "Gradient Boosting",
+      "Tập": "Train",
+      "AUC": 0.8262457795844051,
+      "Gini": 0.6524915591688103,
+      "KS": 0.4909564975235515
+    },
+    {
+      "Mô hình": "Gradient Boosting",
+      "Tập": "Validation",
+      "AUC": 0.783627691862986,
+      "Gini": 0.567255383725972,
+      "KS": 0.43090352123350695
+    },
+    {
+      "Mô hình": "Gradient Boosting",
+      "Tập": "Test OOT",
+      "AUC": 0.773336290540506,
+      "Gini": 0.546672581081012,
+      "KS": 0.4064359025345305
+    }
+  ],
+  "selected": [
+    "n_loan_apps",
+    "n_bank_apps",
+    "n_apps",
+    "education",
+    "call_pct_in_day",
+    "call_pct_other",
+    "call_total",
+    "fb_age_gap",
+    "employment_duration",
+    "employment_type",
+    "fb_days_since_update"
+  ],
+  "psi": {
+    "Logistic (scorecard)": 0.004562628075469143,
+    "Gradient Boosting": 0.002812735003647828
+  },
+  "hosmer_lemeshow": {
+    "Logistic (scorecard)": {
+      "HL": 10.6912931036588,
+      "df": 10,
+      "p": 0.3820693707027998
+    },
+    "Gradient Boosting": {
+      "HL": 11.546836132468794,
+      "df": 10,
+      "p": 0.31652870804498767
+    }
+  }
+}
